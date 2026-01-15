@@ -7,7 +7,7 @@ const Hero: React.FC = () => {
       
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
         {/* Headline */}
-        <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-foreground leading-[1.1] animate-fade-up">
+        <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl font-semibold text-foreground leading-[1.1] animate-fade-up">
           Your day, under control.
         </h1>
         
@@ -44,7 +44,7 @@ const Hero: React.FC = () => {
         
         {/* Philosophy line */}
         <div className="mt-16 pt-8 border-t border-border max-w-xl mx-auto">
-          <p className="text-sm text-muted-foreground italic">
+          <p className="text-base font-serif text-muted-foreground italic">
             "Not a habit game. Not a leaderboard. Execution clarity first."
           </p>
         </div>
