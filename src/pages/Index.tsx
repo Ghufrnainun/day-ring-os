@@ -12,12 +12,18 @@ import FAQ from '@/components/FAQ';
 import FinalCTA from '@/components/FinalCTA';
 import Footer from '@/components/Footer';
 import MobileCTA from '@/components/MobileCTA';
+import DayRing from '@/components/DayRing';
 
 const Index: React.FC = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
+      {/* Global DayRing - fixed position so it spans all sections */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <DayRing />
+      </div>
+      
       <Navbar />
-      <main>
+      <main className="relative z-10">
         <Hero />
         <SocialProof />
         <Preview />
