@@ -39,5 +39,30 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const protectedPaths = [
+    '/today',
+    '/finance',
+    '/notes',
+    '/settings',
+    '/calendar',
+    '/capture',
+  ];
+  const isProtectedPath = protectedPaths.some((path) =>
+    request.nextUrl.pathname.startsWith(path)
+  );
+
+  if (!user && isProtectedPath) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
+    return NextResponse.redirect(url);
+  }
+
+  // Optional: Redirect to /today if logged in and visiting /login
+  if (user && request.nextUrl.pathname.startsWith('/login')) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/today';
+    return NextResponse.redirect(url);
+  }
+
   return response;
 }

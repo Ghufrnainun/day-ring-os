@@ -25,12 +25,12 @@ export function TopNav() {
   }, [today]);
 
   return (
-    <header className="flex items-center justify-between pb-6 pt-2">
+    <header className="flex items-center justify-between pb-6 pt-2 animate-fade-up">
       <div className="flex flex-col">
-        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+        <span className="font-serif italic text-primary text-lg tracking-wide">
           {dateStr}
         </span>
-        <h1 className="text-2xl font-bold tracking-tight mt-0.5">
+        <h1 className="text-2xl font-bold tracking-tight mt-0.5 font-display">
           {greeting}, {user.displayName}
         </h1>
       </div>

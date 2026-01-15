@@ -4,6 +4,7 @@ import '@/app/globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { Providers } from '@/components/providers';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -57,11 +58,13 @@ export default function RootLayout({
       className={`${inter.variable} ${spaceGrotesk.variable} ${cormorant.variable}`}
     >
       <body className="antialiased">
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          {children}
-        </TooltipProvider>
+        <Providers>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            {children}
+          </TooltipProvider>
+        </Providers>
       </body>
     </html>
   );

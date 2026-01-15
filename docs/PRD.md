@@ -1,4 +1,4 @@
-#  PRD - Planner-Centric Life & Finance OS
+# PRD - Planner-Centric Life & Finance OS
 
 > **Status:** Final v1.1 (Schema-Reviewed, Migration-Ready)
 > **Last Updated:** 2026-01-15
@@ -114,7 +114,7 @@ User can:
 3. Reminder is sent (email / push, best-effort)
 4. User confirms action:
    - Mark as done -> earn points
-   - No confirmation -> auto-mark as skipped (UI: "Missed today")
+   - No confirmation -> auto-mark as skipped (UI: "Not completed today")
 5. Streak updates based on daily habit completion
 
 ---
@@ -134,12 +134,12 @@ Notes remain as context and are not bound to a single day.
 
 1. User completes a Task related to spending (e.g. "Pay rent")
 2. User records a Transaction:
-   - Selects account
+   - Selects source/destination account
    - Enters amount
 3. Transaction may link to:
    - Task instance (execution)
    - Note (context)
-4. Account balance updates automatically
+4. Account balance updates automatically (source decreases, destination increases)
 
 ---
 
@@ -209,11 +209,11 @@ Habit features:
 - Auto-enable repeat rules
 - Reminder required by default
 - Confirmation required (manual)
-- Auto-expire to _missed today_ (UI copy)
+- Auto-expire to _not completed today_ (UI copy)
 
 System mapping:
 
-- UI: "Missed today" / "Mission failed" / game-style wording
+- UI: use neutral copy like "Not completed today" / "No action today" (no game/failure wording)
 - System status: `skipped`
 
 This avoids guilt-driven UX while keeping data explicit.
@@ -250,19 +250,13 @@ Levels & achievements are derived from long-term habit consistency.
 
 ### 5.4 Budgeting & Finance System
 
-- Multiple money accounts:
-
-  - Bank
-  - Cash
-  - E-wallet
-  - Investment
-
+- Budget-style planner: track money in/out per logical day
+- Multiple money accounts (bank/savings, cash, e-wallet, investment)
+- Accounts store opening balance and current balance (auto-updated)
 - Transactions as flows:
-
-  - Income
-  - Expense
-  - Transfer
-  - Investment
+  - Income: choose destination account, balance increases
+  - Expense: choose source account, balance decreases
+  - Transfer/Investment: choose from + to accounts, balances update
 
 ## 5.5 Notes & Context System (Supporting Feature)
 
@@ -463,11 +457,24 @@ Rules:
   - Habit (repeat rule)
   - Note
   - Transaction
+- Add flows use a modern sheet (mobile bottom / desktop right) with rounded corners, calm motion, and full accessibility. Avoid full-page detours for quick actions.
+- Popovers are for tiny inline controls only (status menu, date picker), not multi-field forms.
+- Modals are reserved for confirmations and destructive actions.
 
 Rationale:
 
 - Users plan across multiple days
 - Adding should never be blocked by context
+
+---
+
+### 6.5.1 Sheet Accessibility and Keyboard (NEW)
+
+- Focus trap inside sheets and modals; focus returns to the trigger on close
+- ESC closes, Enter submits (when valid), and Tab order matches visual order
+- Visible focus ring on all interactive elements (do not remove outline)
+- All add flows are keyboard reachable and labeled (aria-labels on icon-only actions)
+- Provide a skip-to-content link on nav-heavy screens
 
 ---
 
@@ -783,6 +790,24 @@ Tone example:
 
 ---
 
+### 6.16.1 Undo and Recovery (NEW)
+
+- Confirm before destructive actions (delete, remove, irreversible changes)
+- Provide Undo for non-destructive changes (done, skipped, delayed) for 6-10 seconds
+- Transactions are not hard-deleted; recovery uses a reversal/adjustment flow
+- Undo copy is neutral and calm (no blame, no urgency)
+
+---
+
+### 6.16.2 Loading and Optimistic States (NEW)
+
+- Show submit loading state immediately (button spinner + disabled state)
+- Use optimistic updates for simple status toggles; revert on failure with calm copy
+- Prefer inline progress over full-screen blocking spinners
+- Use skeletons for initial list loads; keep Today Screen visible
+
+---
+
 ### 6.17 Language & Microcopy Guidelines (NEW)
 
 Language sets emotional tone and trust level.
@@ -970,11 +995,11 @@ Motion:
 
 #### Explicit Constraints (DO NOT VIOLATE)
 
-- No No WIP limits
-- No No status-based columns enforced by system
-- No No progress bars or percentages
-- No No gamification tied to cards
-- No No analytics on board activity
+- No WIP limits
+- No status-based columns enforced by system
+- No progress bars or percentages
+- No gamification tied to cards
+- No analytics on board activity
 
 ---
 
@@ -995,7 +1020,7 @@ If a feature causes users to:
 - Avoid Today Screen
 - Treat cards as execution
 
- that feature is **out of scope** and must be redesigned or removed.
+That feature is **out of scope** and must be redesigned or removed.
 
 ---
 
@@ -1050,16 +1075,16 @@ To make Weekly/Monthly reliable, the system must guarantee:
 
 `ensure_instances` must:
 
-1. Load all active tasks: `tasks.is_archived=false` for the user.
+1. Load all active tasks: `tasks.deleted_at IS NULL` for the user.
 2. For each day in range:
-   - If `tasks.repeat_rule` is NULL (one-off): create instance only if scheduled for that day.
-   - If `repeat_rule` exists (habit/repeat): create instance if rule matches that day.
+   - If no `repeat_rules` row exists (one-off): create instance only if scheduled for that day.
+   - If `repeat_rules` exists (habit/repeat): create instance if rule matches that day.
 3. Upsert into `task_instances` using UNIQUE `(task_id, logical_day)`.
 
 **Scheduling rule (Phase 1 simple):**
 
-- One-off tasks store their intended day in `tasks.start_date`.
-- Optional time-of-day in `tasks.due_time`.
+- One-off tasks store their intended day in `tasks.scheduled_at` (date portion).
+- Optional time-of-day in `tasks.scheduled_at`.
 
 This keeps planning queries simple and avoids extra columns.
 
@@ -1072,19 +1097,19 @@ Input: `user_id`, `logical_day`
 Reads:
 
 - `task_instances` WHERE `(user_id, logical_day)`
-- JOIN `tasks` for display fields (title, kind, due_time)
+- JOIN `tasks` for display fields (title, scheduled_at)
 - `transactions` WHERE `(user_id, logical_day)` for money moved
 
 Sort:
 
-1. timed tasks (`tasks.due_time IS NOT NULL`) ascending
+1. timed tasks (`tasks.scheduled_at` has a time component) ascending
 2. untimed tasks
-3. habits either inline or lightly grouped (by `tasks.kind`)
+3. habits either inline or lightly grouped (by presence of `repeat_rules`)
 
 Status rules:
 
 - completion toggles update `task_instances.status`
-- habit confirmations create `habit_logs` and may also set instance status
+- habit confirmations update `task_instances.status` and points (if enabled)
 
 ---
 
@@ -1107,7 +1132,7 @@ Weekly must NOT:
 
 Allowed actions:
 
-- add task to a day (creates/sets `tasks.start_date` then ensures instance)
+- add task to a day (sets `tasks.scheduled_at` date, then ensures instance)
 - move task between days (move instance, preserve `original_logical_day` if it was delayed)
 
 ---
@@ -1145,7 +1170,7 @@ Must have:
 Recommended:
 
 - `task_instances (user_id, status, logical_day)` index (faster filtering)
-- `tasks (user_id, is_archived)` index
+- `tasks (user_id, deleted_at)` index
 
 ---
 
@@ -1153,7 +1178,7 @@ Recommended:
 
 - All day calculations use `users_profile.timezone` -> derive `logical_day` consistently.
 - Instances are the planning surface; tasks are templates.
-- Points are derived from `habit_logs` (done confirmations), not arbitrary counters.
+- Points are derived from habit completion in `task_instances` (done confirmations), not arbitrary counters.
 - Delayed tasks must preserve `original_logical_day` and `delayed_to_day`.
 
 ---
@@ -1264,7 +1289,7 @@ Before launch:
 
 ---
 
-#  FINAL DATABASE SCHEMA (Supabase / PostgreSQL)
+# FINAL DATABASE SCHEMA (Supabase / PostgreSQL)
 
 ## 1. users (Supabase Auth)
 
@@ -1308,9 +1333,13 @@ deleted_at                   -- added (soft delete)
 
 ```sql
 id (uuid, pk)
+user_id (uuid, fk)
 task_id (uuid, fk)
-date DATE
+logical_day DATE
+original_logical_day DATE
+delayed_to_day DATE
 status ENUM('pending','done','skipped','delayed')
+UNIQUE(task_id, logical_day)
 
 -- Status semantics:
 -- pending  : task exists for the logical day and is in progress
@@ -1328,6 +1357,7 @@ confirmed_at TIMESTAMP
 
 ```sql
 id (uuid, pk)
+user_id (uuid, fk)
 task_id (uuid, fk)
 rule_type ENUM('daily','weekly','custom')
 rule_config JSONB
@@ -1353,6 +1383,7 @@ rule_config JSONB
 
 ```sql
 id (uuid, pk)
+user_id (uuid, fk)
 task_id (uuid, fk)
 channel ENUM('push','email')
 scheduled_at TIMESTAMP
@@ -1405,6 +1436,7 @@ from_account_id (uuid, nullable)
 to_account_id (uuid, nullable)
 amount NUMERIC
 type ENUM('income','expense','transfer','investment')
+logical_day DATE
 description                  -- renamed from 'note' to avoid collision
 category                     -- added for Phase 2
 task_instance_id (uuid, nullable)
@@ -1423,12 +1455,12 @@ created_at
 ```sql
 id (uuid, pk)
 user_id (uuid, fk)
-date DATE
+logical_day DATE
 tasks_done INTEGER
 money_in NUMERIC
 money_out NUMERIC
 points_earned INTEGER
-UNIQUE(user_id, date)        -- added
+UNIQUE(user_id, logical_day)        -- added
 ```
 
 ---
@@ -1478,20 +1510,20 @@ UNIQUE(note_id, task_id)
 
 ```
 Note
- ├── generates -> Task
- ├── references -> Transaction
- │
+ |-- generates -> Task
+ |-- references -> Transaction
+ |
 Task
- ├── executed as -> Task Instance
- │
+ |-- executed as -> Task Instance
+ |
 Transaction
- ├── may link -> Task Instance
- └── may link -> Note
+ |-- may link -> Task Instance
+ `-- may link -> Note
 ```
 
 ---
 
-##  DATABASE SCHEMA IMPROVEMENTS (Pre-Migration Review)
+## DATABASE SCHEMA IMPROVEMENTS (Pre-Migration Review)
 
 > **Status:** Reviewed - Apply these refinements before generating migrations.
 
@@ -1520,7 +1552,7 @@ CREATE TABLE gamification_stats (
 
 Current schema has both `note` (text) and `note_id` (FK), which is confusing.
 
-**Fix:** Rename `note` -> `description`
+**Fix:** Rename `note` -> `description`, add `logical_day`, and enforce account shape by `type`
 
 ```sql
 CREATE TABLE transactions (
@@ -1528,8 +1560,15 @@ CREATE TABLE transactions (
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   from_account_id UUID REFERENCES money_accounts(id),
   to_account_id UUID REFERENCES money_accounts(id),
-  amount NUMERIC NOT NULL,
+  amount NUMERIC NOT NULL CHECK (amount > 0),
   type TEXT NOT NULL CHECK (type IN ('income', 'expense', 'transfer', 'investment')),
+  logical_day DATE NOT NULL,
+  CHECK (
+    (type = 'expense' AND from_account_id IS NOT NULL AND to_account_id IS NULL) OR
+    (type = 'income' AND to_account_id IS NOT NULL AND from_account_id IS NULL) OR
+    (type = 'transfer' AND from_account_id IS NOT NULL AND to_account_id IS NOT NULL AND from_account_id <> to_account_id) OR
+    (type = 'investment' AND from_account_id IS NOT NULL AND to_account_id IS NOT NULL AND from_account_id <> to_account_id)
+  ),
   description TEXT,                    -- renamed from 'note'
   category TEXT,                       -- added for Phase 2 readiness
   task_instance_id UUID REFERENCES task_instances(id),
@@ -1558,6 +1597,7 @@ CREATE TABLE notes (
 
 CREATE TABLE notes_task_links (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   note_id UUID REFERENCES notes(id) ON DELETE CASCADE,
   task_id UUID REFERENCES tasks(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ DEFAULT now(),
@@ -1637,19 +1677,22 @@ CREATE INDEX idx_tasks_user_deleted ON tasks(user_id, deleted_at);
 
 -- Task instances (Today screen, calendar views)
 CREATE INDEX idx_task_instances_task_id ON task_instances(task_id);
-CREATE INDEX idx_task_instances_date ON task_instances(date);
+CREATE INDEX idx_task_instances_user_logical_day ON task_instances(user_id, logical_day);
+CREATE INDEX idx_task_instances_logical_day ON task_instances(logical_day);
 CREATE INDEX idx_task_instances_status ON task_instances(status);
-CREATE INDEX idx_task_instances_date_status ON task_instances(date, status);
+CREATE INDEX idx_task_instances_logical_day_status ON task_instances(logical_day, status);
+CREATE INDEX idx_task_instances_user_status_logical_day ON task_instances(user_id, status, logical_day);
 
 -- Finance queries
 CREATE INDEX idx_transactions_user_id ON transactions(user_id);
 CREATE INDEX idx_transactions_user_created ON transactions(user_id, created_at DESC);
+CREATE INDEX idx_transactions_user_logical_day ON transactions(user_id, logical_day);
 CREATE INDEX idx_transactions_from_account ON transactions(from_account_id);
 CREATE INDEX idx_transactions_to_account ON transactions(to_account_id);
 CREATE INDEX idx_money_accounts_user_id ON money_accounts(user_id);
 
 -- Daily snapshots (analytics)
-CREATE INDEX idx_daily_snapshots_user_date ON daily_snapshots(user_id, date);
+CREATE INDEX idx_daily_snapshots_user_logical_day ON daily_snapshots(user_id, logical_day);
 
 -- Notes
 CREATE INDEX idx_notes_user_id ON notes(user_id);
@@ -1713,10 +1756,14 @@ CREATE TABLE tasks (
 ```sql
 CREATE TABLE task_instances (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   task_id UUID REFERENCES tasks(id) ON DELETE CASCADE,
-  date DATE NOT NULL,
+  logical_day DATE NOT NULL,
+  original_logical_day DATE,
+  delayed_to_day DATE,
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'done', 'skipped', 'delayed')),
-  confirmed_at TIMESTAMPTZ
+  confirmed_at TIMESTAMPTZ,
+  UNIQUE(task_id, logical_day)
 );
 ```
 
@@ -1725,6 +1772,7 @@ CREATE TABLE task_instances (
 ```sql
 CREATE TABLE repeat_rules (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   task_id UUID UNIQUE REFERENCES tasks(id) ON DELETE CASCADE,
   rule_type TEXT NOT NULL CHECK (rule_type IN ('daily', 'weekly', 'custom')),
   rule_config JSONB DEFAULT '{}'
@@ -1736,6 +1784,7 @@ CREATE TABLE repeat_rules (
 ```sql
 CREATE TABLE reminders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   task_id UUID REFERENCES tasks(id) ON DELETE CASCADE,
   channel TEXT NOT NULL CHECK (channel IN ('push', 'email')),
   scheduled_at TIMESTAMPTZ NOT NULL,
@@ -1784,6 +1833,13 @@ CREATE TABLE transactions (
   to_account_id UUID REFERENCES money_accounts(id),
   amount NUMERIC NOT NULL CHECK (amount > 0),
   type TEXT NOT NULL CHECK (type IN ('income', 'expense', 'transfer', 'investment')),
+  logical_day DATE NOT NULL,
+  CHECK (
+    (type = 'expense' AND from_account_id IS NOT NULL AND to_account_id IS NULL) OR
+    (type = 'income' AND to_account_id IS NOT NULL AND from_account_id IS NULL) OR
+    (type = 'transfer' AND from_account_id IS NOT NULL AND to_account_id IS NOT NULL AND from_account_id <> to_account_id) OR
+    (type = 'investment' AND from_account_id IS NOT NULL AND to_account_id IS NOT NULL AND from_account_id <> to_account_id)
+  ),
   description TEXT,
   category TEXT,
   task_instance_id UUID REFERENCES task_instances(id),
@@ -1798,12 +1854,12 @@ CREATE TABLE transactions (
 CREATE TABLE daily_snapshots (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  date DATE NOT NULL,
+  logical_day DATE NOT NULL,
   tasks_done INTEGER DEFAULT 0,
   money_in NUMERIC DEFAULT 0,
   money_out NUMERIC DEFAULT 0,
   points_earned INTEGER DEFAULT 0,
-  UNIQUE(user_id, date)
+  UNIQUE(user_id, logical_day)
 );
 ```
 
@@ -1841,10 +1897,51 @@ CREATE TABLE notes (
 ```sql
 CREATE TABLE notes_task_links (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   note_id UUID REFERENCES notes(id) ON DELETE CASCADE,
   task_id UUID REFERENCES tasks(id) ON DELETE CASCADE,
   created_at TIMESTAMPTZ DEFAULT now(),
   UNIQUE(note_id, task_id)
+);
+```
+
+#### 14. idempotency_keys
+
+```sql
+CREATE TABLE idempotency_keys (
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  key UUID NOT NULL,
+  endpoint TEXT NOT NULL,
+  response_hash TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (user_id, key, endpoint)
+);
+```
+
+#### 15. point_logs (Phase 2+)
+
+```sql
+CREATE TABLE point_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  amount INTEGER NOT NULL,
+  reason TEXT NOT NULL,
+  task_instance_id UUID REFERENCES task_instances(id),
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+```
+
+#### 16. reminder_deliveries (Phase 2+)
+
+```sql
+CREATE TABLE reminder_deliveries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  reminder_id UUID REFERENCES reminders(id) ON DELETE SET NULL,
+  channel TEXT NOT NULL,
+  status TEXT NOT NULL,
+  sent_at TIMESTAMPTZ DEFAULT now(),
+  error_message TEXT
 );
 ```
 
@@ -2389,7 +2486,7 @@ This section captures **important implementation notes** so the product remains 
 
 Apply RLS to every user-scoped table:
 
-- `profiles`, `tasks`, `task_instances`, `repeat_rules`, `reminders`, `notes`, `notes_task_links`, `money_accounts`, `transactions`, `daily_snapshots`, `audit_logs`
+- `profiles`, `tasks`, `task_instances`, `repeat_rules`, `reminders`, `notes`, `notes_task_links`, `money_accounts`, `transactions`, `daily_snapshots`, `gamification_stats`, `point_logs`, `reminder_deliveries`, `audit_logs`, `idempotency_keys`
 
 Minimum policy pattern:
 

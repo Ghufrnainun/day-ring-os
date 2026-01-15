@@ -1,6 +1,6 @@
-# 🛰️ Orbit — Agent Guidelines
+# Orbit Agent Guidelines
 
-> **This document defines how autonomous agents operate in the Orbit codebase.**
+> This document defines how autonomous agents operate in the Orbit codebase.
 > It ensures alignment with product vision, technical standards, and emotional safety.
 
 ---
@@ -11,7 +11,7 @@ You are a **senior full-stack engineer** working autonomously on Orbit.
 
 ### Core Responsibilities
 
-- **Own feature delivery end-to-end**: plan → implement → test → document
+- **Own feature delivery end-to-end**: plan -> implement -> test -> document
 - **Maintain product-quality code**: no hacks, no "fix later" patterns
 - **Protect user experience**: emotional safety, calm UX, no pressure mechanics
 - **Preserve data integrity**: especially for finance and `logical_day` logic
@@ -31,36 +31,37 @@ You are a **senior full-stack engineer** working autonomously on Orbit.
 
 ## 2. Non-Negotiables (Product Guardrails)
 
-These are **absolute constraints** — violation is considered a critical bug.
+These are **absolute constraints** - violation is considered a critical bug.
 
 ### Philosophical Guardrails
 
-- ❌ **No habit game mechanics** — Orbit is NOT a gamified habit tracker
-- ❌ **No pressure UX** — no shame, guilt, or aggressive encouragement
-- ❌ **No leaderboards** — no social comparison mechanics
-- ❌ **No forced inputs** — users may have empty days without penalty
-- ❌ **No neon/blue branding** — earth-tone palette only
+- **No gamification outside habits** - points/streaks only for habit confirmations
+- **No pressure UX** - no shame, guilt, or aggressive encouragement
+- **No leaderboards** - no social comparison mechanics
+- **No forced inputs** - users may have empty days without penalty
+- **No neon or high-contrast gradients** - blue only for informational states
 
 ### Emotional Safety Rules
 
 - Empty states are emotionally supportive, not error states
-- Failure messages are honest, calm, brief — never escalate stress
-- Yesterday's missed items trigger supportive messaging, not negative metrics
+- Failure messages are honest, calm, brief - never escalate stress
+- Missed items trigger supportive messaging, not negative metrics
 - Language is direct, supportive, never preachy
 
 ### Privacy Boundaries
 
 - Financial data is **NEVER** public
 - Habit/task details are **NOT** public by default
-- Public profile shows execution heatmap only (if enabled)
-- Users may disable public profile instantly
+- Public profile shows execution heatmap only
+- Public profile is **default ON** but can be disabled instantly
 
 ### UX Quality Rules
 
-- **30-second rule**: Users must be able to add a task, log an expense, and see today's items within 30 seconds
+- **Today Screen is the primary entry** - no dashboard detour
+- **30-second rule**: add a task, log an expense, and see today within 30 seconds
 - Rounded corners are default (12-16px cards, pill buttons)
-- Motion is minimal and purposeful — no bounce, no playful easing
-- Icons are functional only — no decorative sets
+- Motion is minimal and purposeful - no bounce, no playful easing
+- Icons are functional only - no decorative sets
 
 ---
 
@@ -70,33 +71,33 @@ When starting work, follow this loop:
 
 ```
 1. Read PRD (docs/PRD.md)
-   └── Understand product philosophy, current phase, feature scope
+   -> Understand product philosophy, current phase, feature scope
 
 2. Check task.md / implementation_plan.md
-   └── Identify next incomplete feature or issue
+   -> Identify next incomplete feature or issue
 
 3. Plan
-   └── Break down into atomic steps
-   └── Identify affected files, components, database changes
+   -> Break down into atomic steps
+   -> Identify affected files, components, database changes
 
 4. Implement
-   └── Write code following repo conventions
-   └── Commit in small, logical chunks
+   -> Write code following repo conventions
+   -> Commit in small, logical chunks
 
 5. Self-Review
-   └── Verify against PRD requirements
-   └── Check emotional safety and UX guidelines
-   └── Validate `logical_day` handling
+   -> Verify against PRD requirements
+   -> Check emotional safety and UX guidelines
+   -> Validate `logical_day` handling
 
 6. Test
-   └── Run unit tests (especially date/time logic)
-   └── Verify RLS policies
-   └── Check UI/a11y compliance
+   -> Run unit tests (especially date/time logic)
+   -> Verify RLS policies
+   -> Check UI/a11y compliance
 
 7. Documentation
-   └── Update relevant docs
-   └── Add JSDoc/TSDoc as needed
-   └── Update changelog if applicable
+   -> Update relevant docs
+   -> Add JSDoc/TSDoc as needed
+   -> Update changelog if applicable
 ```
 
 ---
@@ -107,26 +108,26 @@ When starting work, follow this loop:
 
 ```
 src/
-├── app/              # Next.js App Router pages & layouts
-│   ├── (auth)/       # Auth-protected route group
-│   ├── api/          # API route handlers
-│   └── ...
-├── components/       # React components
-│   ├── ui/           # Base UI primitives (shadcn)
-│   └── ...           # Feature components
-├── lib/              # Shared utilities
-│   ├── supabase/     # Supabase client & helpers
-│   ├── date/         # Date/time & logical_day utilities
-│   └── utils.ts      # General utilities
-├── hooks/            # Custom React hooks
-├── types/            # TypeScript type definitions
-└── test/             # Test files
+|-- app/              # Next.js App Router pages & layouts
+|   |-- (auth)/       # Auth-protected route group
+|   |-- api/          # API route handlers
+|   `-- ...
+|-- components/       # React components
+|   |-- ui/           # Base UI primitives (shadcn)
+|   `-- ...           # Feature components
+|-- lib/              # Shared utilities
+|   |-- supabase/     # Supabase client & helpers
+|   |-- date/         # Date/time & logical_day utilities
+|   `-- utils.ts      # General utilities
+|-- hooks/            # Custom React hooks
+|-- types/            # TypeScript type definitions
+`-- test/             # Test files
 
 docs/                 # Documentation
-├── PRD.md            # Product Requirements Document
+`-- PRD.md            # Product Requirements Document
 
-db/                   # Database artifacts (migrations, seed)
-└── migrations/       # SQL migration files
+supabase/             # Supabase artifacts
+`-- migrations/       # SQL migration files
 ```
 
 ### 4.2 Naming Conventions
@@ -182,8 +183,7 @@ interface ApiError {
 
 - **Path versioning**: `/api/v1/...`
 - **Accept `idempotency_key`** on all write endpoints
-- **Cursor-based pagination**: use `limit` + `cursor` params
-- **Server resolves `logical_day`** — never trust client-provided dates for day boundaries
+- **Server resolves `logical_day`** - never trust client-provided dates for day boundaries
 
 ---
 
@@ -202,7 +202,8 @@ interface ApiError {
 ```
 profiles, tasks, task_instances, repeat_rules, reminders,
 notes, notes_task_links, money_accounts, transactions,
-daily_snapshots, gamification_stats, audit_logs
+daily_snapshots, gamification_stats, point_logs,
+reminder_deliveries, audit_logs, idempotency_keys
 ```
 
 **Minimum policy pattern**:
@@ -213,22 +214,28 @@ CREATE POLICY "user_isolation" ON table_name
   USING (user_id = auth.uid());
 ```
 
+**Server-only tables**:
+
+- `idempotency_keys` should have RLS enabled but no client policies
+- `point_logs` and `reminder_deliveries` are server-managed in Phase 2+
+
 ### 5.3 Multi-Tenant Boundaries
 
 - Every query MUST be scoped by `user_id`
-- Server routes MUST re-verify `auth.uid()` — never trust client-provided user_id
+- Server routes MUST re-verify `auth.uid()` - never trust client-provided user_id
 - Cross-tenant data access is a **critical security bug**
 
 ### 5.4 Client vs Server Access
 
 | Pattern               | Use Supabase Client (RLS) | Use Server Route |
 | --------------------- | :-----------------------: | :--------------: |
-| Simple CRUD           |            ✅             |                  |
-| Multi-table atomicity |                           |        ✅        |
-| Balance updates       |                           |        ✅        |
-| End-of-day resolution |                           |        ✅        |
-| Reminder dispatching  |                           |        ✅        |
-| Snapshots/exports     |                           |        ✅        |
+| Simple CRUD           |            Yes            |                  |
+| Multi-table atomicity |                           |       Yes        |
+| Balance updates       |                           |       Yes        |
+| End-of-day resolution |                           |       Yes        |
+| Reminder dispatching  |                           |       Yes        |
+| Snapshots/exports     |                           |       Yes        |
+| Idempotency keys      |                           |       Yes        |
 
 ---
 
@@ -248,7 +255,7 @@ function getLogicalDay(userTimezone: string): string {
 **Rules**:
 
 - All day-based queries use `logical_day`, not raw UTC
-- Task instances, habit confirmations, transactions — all resolve to `logical_day`
+- Task instances and transactions resolve to `logical_day`
 - Streaks, snapshots, reviews depend on `logical_day` consistency
 - Handle timezone edge cases: late-night confirmations, travel, DST
 
@@ -257,6 +264,7 @@ function getLogicalDay(userTimezone: string): string {
 - **Accept `idempotency_key`** on all transaction writes
 - Implement idempotency check before creating transactions
 - Prevent double-spend and duplicate submissions
+- `idempotency_keys` is server-only (no client policies)
 
 ```sql
 -- Phase 2+: idempotency_keys table
@@ -275,7 +283,8 @@ CREATE TABLE idempotency_keys (
 - `transactions` is the **source of truth**
 - `money_accounts.current_balance` is a **denormalized cache**
 - Update balances **atomically** within same transaction
-- Phase 3+: Prefer immutable transactions (edits create adjustments)
+- Enforce account shape by `type` (expense/income/transfer/investment)
+- Phase 3+: prefer immutable transactions (edits create adjustments)
 
 ### 6.4 Soft Delete Strategy
 
@@ -290,9 +299,10 @@ SELECT * FROM tasks WHERE deleted_at IS NULL;
 
 **Apply to**:
 
-- `tasks` — preserve habit history
-- `notes` — preserve context linkages
-- `transactions` — **NEVER hard delete**; use adjustments
+- `tasks` - preserve habit history
+- `notes` - preserve context linkages
+- `money_accounts` - preserve finance history
+- `transactions` - **NEVER hard delete**; use adjustments
 
 ---
 
@@ -310,6 +320,7 @@ SELECT * FROM tasks WHERE deleted_at IS NULL;
 - [ ] User A cannot read User B's data
 - [ ] User A cannot write to User B's records
 - [ ] Authenticated endpoints reject anonymous requests
+- [ ] Server-only tables have no client policies
 - [ ] Test RLS bypass (service_role) is intentional and isolated
 
 ### 7.3 UI/UX Regression
@@ -318,7 +329,7 @@ SELECT * FROM tasks WHERE deleted_at IS NULL;
 - [ ] Error states are calm and brief
 - [ ] 30-second rule: quick add works smoothly
 - [ ] Rounded corners, earth-tone palette maintained
-- [ ] No neon/blue in UI elements
+- [ ] No neon/blue in UI elements (blue info states only)
 
 ### 7.4 Accessibility (a11y)
 
@@ -450,12 +461,12 @@ A feature is **done** when:
 | **Shadows**         | Soft elevation, never heavy drop shadows                        |
 | **Motion**          | Minimal, purposeful, short duration                             |
 
-| ❌ NEVER            | ✅ ALWAYS                            |
-| ------------------- | ------------------------------------ |
-| Neon gradients      | Muted, earthy accents                |
-| Blue as brand       | Green/olive/terracotta as accents    |
-| Shame-based copy    | Supportive, neutral messaging        |
-| Habit game visuals  | Subtle execution feedback            |
+| NEVER               | ALWAYS                             |
+| ------------------- | ---------------------------------- |
+| Neon gradients      | Muted, earthy accents              |
+| Blue as brand       | Green/olive/terracotta as accents  |
+| Shame-based copy    | Supportive, neutral messaging      |
+| Habit game visuals  | Subtle execution feedback          |
 | Forced daily inputs | Optional, user-controlled engagement |
 
 ---
@@ -518,5 +529,5 @@ CREATE POLICY "Users can only access own data"
 
 ---
 
-**Last updated**: 2026-01-15
-**Version**: 1.0.0
+**Last updated**: 2026-01-16
+**Version**: 1.0.1

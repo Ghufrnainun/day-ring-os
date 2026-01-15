@@ -36,7 +36,7 @@ export function StatsRow() {
         return (
           <div
             key={stat.label}
-            className="flex flex-col items-center justify-center p-3 rounded-2xl bg-card border border-border/50 shadow-sm"
+            className="flex flex-col items-center justify-center p-4 rounded-2xl border border-white/40 bg-white/40 backdrop-blur-sm shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:bg-white/60"
           >
             <div className={cn('p-2 rounded-full mb-2', stat.bg)}>
               <Icon className={cn('w-5 h-5', stat.color)} />
