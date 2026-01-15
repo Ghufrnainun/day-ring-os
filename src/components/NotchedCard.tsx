@@ -33,15 +33,17 @@ const NotchedCard: React.FC<NotchedCardProps> = ({
 
   if (variant === 'simple') {
     return (
-      <div className={`notched-card-simple ${className}`}>
+      <div className="relative pt-4">
         {label && (
-          <div className="absolute top-0 left-4 -translate-y-1/2">
-            <span className="inline-block px-3 py-1 bg-accent text-foreground text-xs font-semibold rounded-full">
+          <div className="absolute top-0 left-4 z-10">
+            <span className="inline-block px-3 py-1 bg-accent text-foreground text-xs font-semibold rounded-full shadow-card">
               {label}
             </span>
           </div>
         )}
-        {children}
+        <div className={`notched-card-simple ${className}`}>
+          {children}
+        </div>
       </div>
     );
   }
