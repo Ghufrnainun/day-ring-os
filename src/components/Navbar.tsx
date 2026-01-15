@@ -32,73 +32,77 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={cn(
-        'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled
-          ? 'bg-background/95 backdrop-blur-md border-b border-border shadow-card'
-          : 'bg-transparent'
-      )}
+    <motion.header
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: 'easeOut' }}
+      className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-4"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Brand */}
-          <a href="#" className="flex items-center gap-2 group">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
-              <div className="w-4 h-4 border-2 border-primary-foreground rounded-full" />
-            </div>
-            <span className="font-display font-bold text-xl text-foreground">Orbit</span>
-          </a>
-
-          {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => scrollToSection(e, link.href)}
-                className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors link-underline"
-              >
-                {link.name}
-              </a>
-            ))}
+      <nav
+        className={cn(
+          'flex items-center justify-between gap-6 px-4 sm:px-6 py-3 rounded-full transition-all duration-300',
+          'bg-background/70 backdrop-blur-xl border border-border/50 shadow-lg',
+          isScrolled && 'bg-background/85 shadow-xl'
+        )}
+        style={{
+          maxWidth: '800px',
+          width: '100%',
+        }}
+      >
+        {/* Brand */}
+        <a href="#" className="flex items-center gap-2 group flex-shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
+            <div className="w-3.5 h-3.5 border-2 border-primary-foreground rounded-full" />
           </div>
+          <span className="font-display font-bold text-lg text-primary">Orbit</span>
+        </a>
 
-          {/* CTA */}
-          <div className="hidden md:block">
+        {/* Desktop Nav */}
+        <div className="hidden md:flex items-center gap-6">
+          {navLinks.map((link) => (
             <a
-              href="#cta"
-              onClick={(e) => scrollToSection(e, '#cta')}
-              className="btn-primary text-sm btn-press hover-glow"
+              key={link.href}
+              href={link.href}
+              onClick={(e) => scrollToSection(e, link.href)}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              Create your first day
+              {link.name}
             </a>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-foreground p-2 transition-transform duration-200 hover:scale-110 active:scale-95"
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
+          ))}
         </div>
-      </div>
+
+        {/* CTA */}
+        <div className="hidden md:block flex-shrink-0">
+          <a
+            href="#cta"
+            onClick={(e) => scrollToSection(e, '#cta')}
+            className="inline-flex items-center justify-center px-5 py-2 text-sm font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 btn-press hover-glow"
+          >
+            Create your first day
+          </a>
+        </div>
+
+        {/* Mobile menu button */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="text-foreground p-2 transition-transform duration-200 hover:scale-110 active:scale-95"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
+      </nav>
 
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="md:hidden bg-background/95 backdrop-blur-md border-t border-border"
+            className="absolute top-20 left-4 right-4 md:hidden bg-background/80 backdrop-blur-xl border border-border/50 rounded-2xl shadow-xl overflow-hidden"
           >
             <div className="px-4 py-4 space-y-2">
               {navLinks.map((link, index) => (
@@ -109,7 +113,7 @@ const Navbar: React.FC = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="block px-3 py-2 text-base font-medium text-foreground hover:bg-muted/10 rounded-lg transition-colors"
+                  className="block px-3 py-2.5 text-base font-medium text-foreground hover:bg-primary/10 rounded-xl transition-colors"
                 >
                   {link.name}
                 </motion.a>
@@ -118,7 +122,7 @@ const Navbar: React.FC = () => {
                 <a
                   href="#cta"
                   onClick={(e) => scrollToSection(e, '#cta')}
-                  className="btn-primary text-sm text-center w-full block btn-press"
+                  className="inline-flex items-center justify-center w-full px-5 py-2.5 text-sm font-medium rounded-full bg-primary text-primary-foreground btn-press"
                 >
                   Create your first day
                 </a>
@@ -127,7 +131,7 @@ const Navbar: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </motion.header>
   );
 };
 
