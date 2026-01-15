@@ -4,7 +4,7 @@ import ScrollReveal from './ScrollReveal';
 
 const ProblemSolution: React.FC = () => {
   return (
-    <section id="product" className="py-20 sm:py-28 bg-surface/30">
+    <section id="product" className="py-20 sm:py-28 bg-gradient-to-b from-background via-surface/40 to-surface/20">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <div className="grid md:grid-cols-2 gap-8 sm:gap-12">
           {/* Problem */}

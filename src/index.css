@@ -8,61 +8,63 @@
 
 @layer base {
   :root {
-    /* Core Earth Palette */
-    --background: 38 33% 94%; /* #F6F1E8 */
+    /* Core Premium Earth Palette */
+    --background: 33 33% 95%; /* #F7F3EE Cream Organik */
     --foreground: 0 0% 9%; /* #171717 */
     
-    --card: 36 28% 90%; /* #F0E8DC */
+    --card: 33 28% 92%; /* Lighter cream for cards */
     --card-foreground: 0 0% 9%;
     
-    --popover: 36 28% 90%;
+    --popover: 33 28% 92%;
     --popover-foreground: 0 0% 9%;
     
-    --primary: 107 22% 30%; /* #3F5D3A deep olive */
-    --primary-foreground: 38 33% 94%;
+    --primary: 162 33% 27%; /* #2F5D50 Forest Green */
+    --primary-foreground: 33 33% 95%;
     
-    --secondary: 17 52% 47%; /* #B85C38 burnt terracotta */
-    --secondary-foreground: 38 33% 94%;
+    --secondary: 16 50% 53%; /* #C36A4A Terracotta */
+    --secondary-foreground: 33 33% 95%;
     
-    --muted: 0 0% 37%; /* #5E5E5E */
-    --muted-foreground: 0 0% 37%;
+    --muted: 33 15% 40%; /* Warmer muted */
+    --muted-foreground: 33 15% 40%;
     
-    --accent: 42 52% 64%; /* #D7B56D muted amber */
+    --accent: 43 72% 59%; /* #E2B24A Muted Gold */
     --accent-foreground: 0 0% 9%;
     
     --destructive: 0 62% 50%;
-    --destructive-foreground: 38 33% 94%;
+    --destructive-foreground: 33 33% 95%;
     
-    --border: 32 20% 85%; /* #E3D9CE */
-    --input: 32 20% 85%;
-    --ring: 107 22% 30%;
+    --border: 33 20% 88%; /* Softer border */
+    --input: 33 20% 88%;
+    --ring: 162 33% 27%;
     
     --radius: 0.75rem;
     
     /* Custom tokens */
-    --surface: 36 28% 90%;
-    --highlight: 42 52% 64%;
-    --info: 193 35% 57%; /* #6CA6B8 */
+    --surface: 33 25% 93%;
+    --surface-elevated: 33 30% 97%;
+    --highlight: 43 72% 59%;
+    --info: 193 35% 57%;
     
     /* Orbit motif */
-    --orbit-color: 107 22% 30%;
+    --orbit-color: 162 33% 27%;
     --orbit-opacity: 0.08;
     
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(32 20% 50% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(32 20% 50% / 0.08), 0 2px 4px -2px hsl(32 20% 50% / 0.05);
-    --shadow-lg: 0 10px 15px -3px hsl(32 20% 50% / 0.1), 0 4px 6px -4px hsl(32 20% 50% / 0.05);
-    --shadow-card: 0 1px 3px 0 hsl(32 20% 50% / 0.06), 0 1px 2px -1px hsl(32 20% 50% / 0.06);
+    /* Premium Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(33 20% 30% / 0.04);
+    --shadow-md: 0 4px 6px -1px hsl(33 20% 30% / 0.06), 0 2px 4px -2px hsl(33 20% 30% / 0.04);
+    --shadow-lg: 0 10px 15px -3px hsl(33 20% 30% / 0.08), 0 4px 6px -4px hsl(33 20% 30% / 0.04);
+    --shadow-card: 0 1px 3px 0 hsl(33 20% 30% / 0.05), 0 1px 2px -1px hsl(33 20% 30% / 0.04);
+    --shadow-premium: 0 20px 40px -12px hsl(162 33% 27% / 0.12);
     
-    /* Sidebar (keeping for compatibility) */
-    --sidebar-background: 38 33% 94%;
+    /* Sidebar */
+    --sidebar-background: 33 33% 95%;
     --sidebar-foreground: 0 0% 9%;
-    --sidebar-primary: 107 22% 30%;
-    --sidebar-primary-foreground: 38 33% 94%;
-    --sidebar-accent: 36 28% 90%;
+    --sidebar-primary: 162 33% 27%;
+    --sidebar-primary-foreground: 33 33% 95%;
+    --sidebar-accent: 33 28% 92%;
     --sidebar-accent-foreground: 0 0% 9%;
-    --sidebar-border: 32 20% 85%;
-    --sidebar-ring: 107 22% 30%;
+    --sidebar-border: 33 20% 88%;
+    --sidebar-ring: 162 33% 27%;
   }
 }
 
