@@ -26,15 +26,18 @@ const HowItWorks: React.FC = () => {
   ];
 
   return (
-    <section id="how-it-works" className="py-20 sm:py-28 bg-gradient-to-b from-surface/20 via-background to-surface/30">
+    <section id="how-it-works" className="py-20 sm:py-28 bg-background">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center mb-12 sm:mb-16">
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground">
+            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium tracking-wide uppercase bg-primary/10 text-primary mb-4">
+              Simple Flow
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-foreground">
               How it works
             </h2>
             <p className="mt-3 text-lg text-muted-foreground">
-              Simple flow, serious results
+              Three steps to daily clarity
             </p>
           </div>
         </ScrollReveal>
