@@ -1,9 +1,10 @@
 import React from 'react';
 import { ArrowDown } from 'lucide-react';
+import Link from 'next/link';
 
 const Hero: React.FC = () => {
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center pt-20 pb-16">
+    <section className="relative min-h-[90vh] flex items-center justify-center pt-32 pb-24">
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center flex flex-col items-center">
         {/* Badge/Pill */}
         <div className="mb-8 animate-fade-up animate-float">
@@ -13,7 +14,7 @@ const Hero: React.FC = () => {
         </div>
 
         {/* Headline */}
-        <h1 className="font-sans text-6xl sm:text-7xl lg:text-8xl font-medium text-foreground tracking-tight leading-[1] animate-fade-up-delay-1 text-balance drop-shadow-sm">
+        <h1 className="font-sans text-6xl sm:text-7xl lg:text-8xl font-medium text-foreground tracking-tight leading-[0.95] animate-fade-up-delay-1 text-balance drop-shadow-sm">
           Run your day <br className="hidden sm:block" />
           <span className="font-serif italic text-primary">with clarity.</span>
         </h1>
@@ -33,12 +34,12 @@ const Hero: React.FC = () => {
                 placeholder="Enter your email"
                 className="h-12 px-4 bg-transparent border-none text-foreground placeholder:text-muted-foreground focus:outline-none w-64 text-sm"
               />
-              <a
-                href="#cta"
+              <Link
+                href="/register"
                 className="h-11 px-8 rounded-full bg-[#2F4F4F] text-white font-medium hover:bg-[#2F4F4F]/90 transition-all shadow-glow flex items-center justify-center min-w-[140px]"
               >
                 Start Free
-              </a>
+              </Link>
             </div>
             <p className="mt-4 text-xs font-medium text-muted-foreground/80 flex items-center gap-6">
               <span className="flex items-center gap-1.5">

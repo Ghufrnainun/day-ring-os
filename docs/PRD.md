@@ -839,9 +839,9 @@ To avoid generic "calm minimal" aesthetics, the product uses **signature brand m
   - Section dividers / accents (subtle)
   - Key highlights (e.g., CTA area)
 
-**Secondary motif: Notched Cards**
+**Secondary motif: Premium Cards**
 
-- Cards have a subtle notch / tab silhouette (small corner cut or top label tab)
+- Cards have a premium rounded aesthetic (glassmorphism + rounded-3xl)
 - Used in:
   - Feature cards
   - Preview mock
@@ -885,6 +885,124 @@ Still enforced:
 
 ---
 
+### 6.21 Board-Style Workspace (OPTIONAL, SUPPORTING — NEW)
+
+Orbit **may** provide a **board-style workspace** inspired by card-based planning tools (sticky notes / kanban-like), but with **strict constraints** so it does not replace the Today Screen or Planner.
+
+This is a **supporting surface**, not a primary execution layer.
+
+---
+
+#### Purpose & Positioning
+
+Board View exists to support:
+
+- Brain-dumping
+- Early planning
+- Visual grouping of thoughts
+- Lightweight organization
+
+It does **not** exist to:
+
+- Replace the Today Screen
+- Replace Tasks / Habits
+- Become a full kanban or Notion-style workspace
+
+> Board View answers: _“How do I roughly organize my thoughts?”_
+> Today Screen answers: _“What am I doing \***\*today\*\***?”_
+
+---
+
+#### Scope (Phase 1 – Limited)
+
+- Board is implemented **inside Notes**, not as a separate core module
+- Each board belongs to a **Note workspace**
+- Cards are **notes or note blocks**, not tasks by default
+
+Board capabilities:
+
+- Multiple columns (customizable)
+- Drag & drop cards between columns
+- Free-form text inside cards
+- Soft color accents (earth-tone palette only)
+
+---
+
+#### Relationship to Tasks & Planner
+
+- Cards may contain:
+  - Checklists
+  - Text
+  - References
+- Checklist items **can be converted into Tasks**
+- Converted Tasks:
+  - Leave a reference link in the card
+  - Appear on Today Screen when scheduled
+
+Rules:
+
+- Cards themselves are **not executable items**
+- Completion of a card does **not** count as execution
+- Execution always happens via Tasks / Habits
+
+---
+
+#### Visual & Interaction Rules
+
+- Board uses **notched cards** (brand motif)
+- Rounded cards with soft elevation
+- No sharp kanban lanes
+- No swimlanes with metrics
+
+Color rules:
+
+- Cards may have **soft background tint**
+- No bright colors
+- No priority colors (red / green meaning)
+
+Motion:
+
+- Drag & drop is smooth and calm
+- No snapping animations
+- No playful physics
+
+---
+
+#### Explicit Constraints (DO NOT VIOLATE)
+
+- ❌ No WIP limits
+- ❌ No status-based columns enforced by system
+- ❌ No progress bars or percentages
+- ❌ No gamification tied to cards
+- ❌ No analytics on board activity
+
+---
+
+#### Phase Evolution
+
+- **Phase 1:** Notes-based board for planning & dumping
+- **Phase 2:** Boards usable in weekly/monthly review context
+- **Phase 3:** Optional templates (e.g. Weekly Plan Board)
+- **Phase 4:** AI summarization of board → suggested Tasks (optional)
+
+---
+
+#### UX Guardrail (CRITICAL)
+
+If a feature causes users to:
+
+- Stay in boards all day
+- Avoid Today Screen
+- Treat cards as execution
+
+👉 that feature is **out of scope** and must be redesigned or removed.
+
+---
+
+> Orbit is **planner-centric**. Boards support thinking — they never replace doing.
+
+---
+
 ## 7. Pricing‑Ready Feature Gating
 
 | Feature             | Free  | Pro (Full)               |
@@ -901,6 +1019,248 @@ Still enforced:
 
 - **Basic:** points, daily streak
 - **Full:** achievements, analytics, level rewards
+
+---
+
+## 8. Technical Implementation Logic (Schema Validation)
+
+### 8.1 Schema Validation — Calendar & Today (Executable Contract)
+
+This section ensures the schema supports the **Today Screen**, **Weekly slider**, and **Monthly calendar click** without ambiguity. This is written so it can be executed directly in implementation.
+
+### 8.2 View → Source of Truth
+
+- **Today Screen (execution):** `task_instances` + `transactions`
+- **Weekly (planning):** `task_instances` (planned per day) + light day density
+- **Monthly (awareness):** aggregated counts per day from `task_instances` (optionally enriched by `daily_snapshots.executed` for past days)
+
+**Hard rule:** Calendar views NEVER read day contents directly from `tasks`. `tasks` are templates; **instances are the plan**.
+
+---
+
+### 8.3 Required engine: `ensure_instances(user_id, start_day, end_day)`
+
+To make Weekly/Monthly reliable, the system must guarantee:
+
+- For any displayed day-range (week/month), all relevant tasks/habits have a `task_instance` for each applicable `logical_day`.
+
+**Phase 1 (MVP) implementation = on-demand**
+
+- When user opens Weekly/Monthly or selects a day, call `ensure_instances` for that range.
+
+`ensure_instances` must:
+
+1. Load all active tasks: `tasks.is_archived=false` for the user.
+2. For each day in range:
+   - If `tasks.repeat_rule` is NULL (one-off): create instance only if scheduled for that day.
+   - If `repeat_rule` exists (habit/repeat): create instance if rule matches that day.
+3. Upsert into `task_instances` using UNIQUE `(task_id, logical_day)`.
+
+**Scheduling rule (Phase 1 simple):**
+
+- One-off tasks store their intended day in `tasks.start_date`.
+- Optional time-of-day in `tasks.due_time`.
+
+This keeps planning queries simple and avoids extra columns.
+
+---
+
+### 8.4 Today Screen — canonical query behavior
+
+Input: `user_id`, `logical_day`
+
+Reads:
+
+- `task_instances` WHERE `(user_id, logical_day)`
+- JOIN `tasks` for display fields (title, kind, due_time)
+- `transactions` WHERE `(user_id, logical_day)` for money moved
+
+Sort:
+
+1. timed tasks (`tasks.due_time IS NOT NULL`) ascending
+2. untimed tasks
+3. habits either inline or lightly grouped (by `tasks.kind`)
+
+Status rules:
+
+- completion toggles update `task_instances.status`
+- habit confirmations create `habit_logs` and may also set instance status
+
+---
+
+### 8.5 Weekly slider — canonical behavior
+
+Input: `user_id`, `week_start_day`..`week_end_day`
+
+Steps:
+
+1. `ensure_instances(user_id, week_start_day, week_end_day)`
+2. Compute day density (light indicator):
+   - `count(task_instances)` per day (optionally excluding `skipped`)
+3. When user selects day `D`:
+   - fetch same shape as Today Screen for `D`
+
+Weekly must NOT:
+
+- compute completion percentages
+- show progress charts
+
+Allowed actions:
+
+- add task to a day (creates/sets `tasks.start_date` then ensures instance)
+- move task between days (move instance, preserve `original_logical_day` if it was delayed)
+
+---
+
+### 8.6 Monthly grid — canonical behavior
+
+Input: `user_id`, `month_start_day`..`month_end_day`
+
+Steps:
+
+1. Option A (Phase 1 accurate): `ensure_instances(user_id, month_start_day, month_end_day)`
+2. Aggregation for indicators:
+   - `planned_count[D] = count(task_instances WHERE user_id AND logical_day=D)`
+   - `executed[D]`:
+     - for past days: read `daily_snapshots.executed` if exists
+     - for future days: null/false
+3. On click day `D`:
+   - show list of instances for that day (tasks + habits)
+
+Monthly must NOT:
+
+- allow editing directly in the grid
+- show streak visuals
+
+---
+
+### 8.7 Index & constraint checklist
+
+Must have:
+
+- `task_instances (task_id, logical_day) UNIQUE`
+- `task_instances (user_id, logical_day)` index
+- `transactions (user_id, logical_day)` index
+
+Recommended:
+
+- `task_instances (user_id, status, logical_day)` index (faster filtering)
+- `tasks (user_id, is_archived)` index
+
+---
+
+### 8.8 Consistency rules (anti-bug)
+
+- All day calculations use `users_profile.timezone` → derive `logical_day` consistently.
+- Instances are the planning surface; tasks are templates.
+- Points are derived from `habit_logs` (done confirmations), not arbitrary counters.
+- Delayed tasks must preserve `original_logical_day` and `delayed_to_day`.
+
+---
+
+## 9. API Contract (Scalable — TODO)
+
+> This section will define stable endpoints and response shapes for Today / Weekly / Monthly / Habits / Notes / Finance.
+
+**Minimum endpoints (Phase 1):**
+
+- `POST /api/ensure-instances` (range)
+- `GET /api/today?day=YYYY-MM-DD`
+- `GET /api/week?start=YYYY-MM-DD&end=YYYY-MM-DD`
+- `GET /api/month?start=YYYY-MM-DD&end=YYYY-MM-DD`
+- `POST /api/tasks` (create task/habit)
+- `PATCH /api/task-instances/:id` (done / skipped / delayed)
+- `POST /api/transactions` (quick log)
+- `POST /api/notes`
+- `PATCH /api/notes/:id`
+
+Conventions (LOCKED):
+
+- Inputs validated (zod or equivalent)
+- Consistent error shape
+- Idempotency for finance writes where possible
+
+---
+
+## 10. Security & Data Isolation (Supabase RLS — LOCKED)
+
+This section defines **mandatory Row Level Security (RLS)** rules. Misconfiguration here is considered a **critical vulnerability**.
+
+---
+
+### 10.1 Global Security Principles
+
+- **RLS enabled on every table** (no exception)
+- **Default deny**: no implicit access
+- All access is scoped by `user_id = auth.uid()`
+- No table is ever publicly readable or writable
+
+> If RLS is disabled on any table, the system is considered compromised.
+
+---
+
+### 10.2 Authentication Assumptions
+
+- Supabase Auth is the single identity provider
+- `auth.uid()` is the canonical user identifier
+- `users_profile.user_id` = `auth.uid()`
+
+---
+
+### 10.3 Table-Level RLS Policies (Phase 1)
+
+See **Final Database Schema** section for specific SQL implementation.
+
+---
+
+### 10.4 Join Safety Rules
+
+All joins must be **safe by construction**:
+
+- `task_instances.task_id → tasks.id` is safe because:
+
+  - both tables enforce `user_id = auth.uid()`
+
+- `transactions.task_instance_id → task_instances.id` is safe only if:
+  - transaction `user_id` matches instance `user_id`
+
+Do **not** rely on frontend filtering for security.
+
+---
+
+### 10.5 Service Role & Background Jobs
+
+Service role access:
+
+- Used only for:
+  - `ensure_instances` engine
+  - reminder dispatch
+- Never exposed to client
+
+Rules:
+
+- Service role must still scope queries by `user_id`
+- No cross-user batch jobs without explicit admin tooling
+
+---
+
+### 10.6 Explicit Anti-Patterns (DO NOT DO)
+
+- ❌ Disable RLS for debugging
+- ❌ Use `public` read access
+- ❌ Trust frontend `user_id` input
+- ❌ Cross-user analytics queries
+
+---
+
+### 10.7 Security Review Checklist (MANDATORY)
+
+Before launch:
+
+- Verify `RLS enabled` on all tables in Supabase Dashboard.
+- As user A, attempt to read/insert rows owned by user B (must fail).
+- Attempt to insert a transaction referencing another user’s account_id (must fail).
+- Attempt unauthenticated queries (must fail).
 
 ---
 

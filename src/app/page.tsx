@@ -24,7 +24,7 @@ export default function Home() {
           </div>
           <div className="relative z-10">
             <Hero />
-            <section className="py-20">
+            <section className="py-32">
               <Preview />
             </section>
           </div>

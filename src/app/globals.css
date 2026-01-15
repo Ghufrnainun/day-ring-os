@@ -97,26 +97,6 @@
 }
 
 @layer components {
-  /* Notched Card Effect */
-  .notched-card {
-    @apply relative bg-card rounded-xl border border-border;
-    clip-path: polygon(
-      0 12px,
-      12px 12px,
-      12px 0,
-      calc(100% - 12px) 0,
-      calc(100% - 12px) 12px,
-      100% 12px,
-      100% 100%,
-      0 100%
-    );
-  }
-
-  .notched-card-simple {
-    @apply relative bg-card rounded-xl border border-border;
-    clip-path: polygon(0 8px, 8px 0, 100% 0, 100% 100%, 0 100%);
-  }
-
   /* Orbit Ring Animation - Sequential pulse from outer to inner */
   @keyframes orbit-sequential-pulse {
     0% {
@@ -296,8 +276,8 @@
     @apply inline-flex items-center justify-center px-6 py-3 
            bg-primary text-primary-foreground font-semibold 
            rounded-lg transition-all duration-200 ease-out
-           hover:shadow-lg hover:-translate-y-0.5
-           focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
+           hover:shadow-lg hover:-translate-y-0.5 hover:ring-4 hover:ring-primary/10
+           focus:outline-none focus:ring-4 focus:ring-primary/20 focus:ring-offset-2 focus:ring-offset-background;
   }
 
   .btn-secondary {
@@ -368,5 +348,20 @@
 
   .shadow-glow:hover {
     box-shadow: 0 0 25px hsla(162, 33%, 27%, 0.5);
+  }
+
+  .shadow-glow-lg {
+    box-shadow: 0 0 20px hsla(162, 33%, 27%, 0.4);
+    transition: box-shadow 0.3s ease;
+  }
+
+  .shadow-glow-lg:hover {
+    box-shadow: 0 0 35px hsla(162, 33%, 27%, 0.6);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
 }

@@ -58,7 +58,7 @@ These are **absolute constraints** — violation is considered a critical bug.
 ### UX Quality Rules
 
 - **30-second rule**: Users must be able to add a task, log an expense, and see today's items within 30 seconds
-- Rounded corners are default (no sharp enterprise UI)
+- Rounded corners are default (12-16px cards, pill buttons)
 - Motion is minimal and purposeful — no bounce, no playful easing
 - Icons are functional only — no decorative sets
 
@@ -442,7 +442,7 @@ A feature is **done** when:
 | Element             | Value                                                           |
 | ------------------- | --------------------------------------------------------------- |
 | **Primary motif**   | Day Ring / Orbit (subtle orbital ring lines)                    |
-| **Secondary motif** | Notched Cards (rounded + corner notch/tab detail)               |
+| **Secondary motif** | Premium Cards (glassmorphism + rounded-3xl)                     |
 | **Typography**      | Sans primary (Inter/Manrope/DM Sans)                            |
 | **Serif accent**    | Cormorant Garamond (hero/date only, never buttons)              |
 | **Palette**         | Earth-tone: warm off-white, muted green/olive, brown/terracotta |

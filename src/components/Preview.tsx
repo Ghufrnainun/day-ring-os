@@ -31,7 +31,7 @@ export function InteractivePreview() {
       whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, ease: 'easeOut' }}
-      className="relative w-full max-w-5xl mx-auto perspective-1000"
+      className="relative w-full max-w-5xl mx-auto perspective-1000 scroll-mt-32 sm:scroll-mt-40"
       id="preview"
     >
       {/* Decorative backdrop elements */}
@@ -117,12 +117,15 @@ export function InteractivePreview() {
       {/* Caption */}
       <div className="text-center mt-12 relative z-10">
         <p className="text-xl font-display text-muted italic">
-          "One screen for what matters today."
+          &quot;One screen for what matters today.&quot;
         </p>
-        <button className="mt-4 text-primary font-bold hover:tracking-widest transition-all inline-flex items-center group bg-white/50 px-6 py-2 rounded-full border border-white/40 shadow-sm">
-          EXPLORE FEATURES{' '}
+        <a
+          href="#features"
+          className="mt-4 text-primary font-bold hover:tracking-widest transition-all inline-flex items-center group bg-white/50 px-6 py-2 rounded-full border border-white/40 shadow-sm"
+        >
+          EXPLORE FEATURES
           <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-        </button>
+        </a>
       </div>
     </motion.div>
   );

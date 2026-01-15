@@ -1,5 +1,5 @@
 import React from 'react';
-import NotchedCard from './NotchedCard';
+import PremiumCard from './PremiumCard';
 import ScrollReveal from './ScrollReveal';
 import { CheckSquare, RefreshCw, Wallet } from 'lucide-react';
 
@@ -9,7 +9,8 @@ const Modules: React.FC = () => {
       icon: CheckSquare,
       label: 'Core',
       title: 'Daily Planner',
-      description: 'The heart of Orbit. Plan your day, check off tasks, and stay focused on what matters right now.',
+      description:
+        'The heart of Orbit. Plan your day, check off tasks, and stay focused on what matters right now.',
       features: ['Today-first view', 'Timed tasks', 'Quick capture'],
       highlight: true,
     },
@@ -17,7 +18,8 @@ const Modules: React.FC = () => {
       icon: RefreshCw,
       label: 'Optional',
       title: 'Habits',
-      description: 'Build habits without the pressure. No gamification, no guilt — just gentle consistency.',
+      description:
+        'Build habits without the pressure. No gamification, no guilt — just gentle consistency.',
       features: ['Flexible streaks', 'No punishment', 'Weekly rhythms'],
       highlight: false,
     },
@@ -25,14 +27,20 @@ const Modules: React.FC = () => {
       icon: Wallet,
       label: 'Optional',
       title: 'Finance',
-      description: 'Track spending with intention. See where your money goes without the complexity.',
+      description:
+        'Track spending with intention. See where your money goes without the complexity.',
       features: ['Multi-account', 'Transaction log', 'Monthly review'],
       highlight: false,
     },
   ];
 
   return (
-    <section className="py-20 sm:py-28 bg-[hsl(162_20%_95%)]">
+    <section
+      id="features"
+      className="py-20 sm:py-28 bg-[hsl(162_20%_95%)] relative overflow-hidden"
+    >
+      {/* Subtle background blob */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl pointer-events-none translate-x-1/2 -translate-y-1/2" />
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center mb-12 sm:mb-16">
@@ -51,11 +59,11 @@ const Modules: React.FC = () => {
         <div className="grid md:grid-cols-3 gap-6">
           {modules.map((module, index) => (
             <ScrollReveal key={index} delay={index * 100}>
-              <NotchedCard
+              <PremiumCard
                 variant="simple"
                 label={module.label}
-                className={`p-6 pt-8 h-full hover-lift ${
-                  module.highlight ? 'border-2 border-primary/30 hover-glow' : ''
+                className={`p-6 pt-8 h-full ${
+                  module.highlight ? 'border-primary/40 hover-glow' : ''
                 }`}
               >
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 transition-all duration-200 hover:bg-primary/20 hover:scale-105 cursor-pointer">
@@ -69,13 +77,16 @@ const Modules: React.FC = () => {
                 </p>
                 <ul className="space-y-2">
                   {module.features.map((feature, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm text-foreground group">
+                    <li
+                      key={i}
+                      className="flex items-center gap-2 text-sm text-foreground group"
+                    >
                       <span className="w-1.5 h-1.5 rounded-full bg-primary transition-transform duration-200 group-hover:scale-150" />
                       {feature}
                     </li>
                   ))}
                 </ul>
-              </NotchedCard>
+              </PremiumCard>
             </ScrollReveal>
           ))}
         </div>

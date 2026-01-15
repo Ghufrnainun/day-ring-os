@@ -1,7 +1,8 @@
 import React from 'react';
-import NotchedCard from './NotchedCard';
+import PremiumCard from './PremiumCard';
 import ScrollReveal from './ScrollReveal';
 import { Check } from 'lucide-react';
+import Link from 'next/link';
 
 const Pricing: React.FC = () => {
   const tiers = [
@@ -46,7 +47,7 @@ const Pricing: React.FC = () => {
               Simple pricing
             </h2>
             <p className="mt-3 text-lg text-muted-foreground">
-              Start free. Upgrade when you're ready.
+              Start free. Upgrade when you&apos;re ready.
             </p>
           </div>
         </ScrollReveal>
@@ -54,10 +55,10 @@ const Pricing: React.FC = () => {
         <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
           {tiers.map((tier, index) => (
             <ScrollReveal key={tier.name} delay={index * 100}>
-              <NotchedCard
-                className={`p-8 hover-lift h-full ${
-                  tier.highlighted 
-                    ? 'border-2 border-primary shadow-soft hover-glow' 
+              <PremiumCard
+                className={`p-8 h-full ${
+                  tier.highlighted
+                    ? 'border-primary/40 shadow-glow hover:border-primary/60'
                     : ''
                 }`}
               >
@@ -66,42 +67,48 @@ const Pricing: React.FC = () => {
                     Most popular
                   </span>
                 )}
-                
+
                 <h3 className="font-display text-2xl font-bold text-foreground">
                   {tier.name}
                 </h3>
-                
+
                 <div className="mt-4 flex items-baseline gap-1">
                   <span className="font-display text-4xl font-bold text-foreground">
                     {tier.price}
                   </span>
                   <span className="text-muted-foreground">{tier.period}</span>
                 </div>
-                
+
                 <p className="mt-2 text-sm text-muted-foreground">
                   {tier.description}
                 </p>
-                
+
                 <ul className="mt-6 space-y-3">
                   {tier.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-start gap-3 group">
+                    <li
+                      key={featureIndex}
+                      className="flex items-start gap-3 group"
+                    >
                       <div className="transition-transform duration-200 group-hover:scale-110">
-                        <Check size={18} className="text-primary mt-0.5 flex-shrink-0" />
+                        <Check
+                          size={18}
+                          className="text-primary mt-0.5 flex-shrink-0"
+                        />
                       </div>
                       <span className="text-sm text-foreground">{feature}</span>
                     </li>
                   ))}
                 </ul>
-                
-                <a
-                  href="#cta"
-                  className={`mt-8 w-full text-center block btn-press ${
+
+                <Link
+                  href="/register"
+                  className={`mt-8 w-full text-center block btn-press rounded-full py-3 ${
                     tier.highlighted ? 'btn-primary' : 'btn-secondary'
                   }`}
                 >
                   {tier.cta}
-                </a>
-              </NotchedCard>
+                </Link>
+              </PremiumCard>
             </ScrollReveal>
           ))}
         </div>

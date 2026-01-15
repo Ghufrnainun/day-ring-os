@@ -1,4 +1,6 @@
 import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 
 const Footer: React.FC = () => {
   return (
@@ -6,30 +8,44 @@ const Footer: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           {/* Brand */}
-          <a href="#" className="flex items-center gap-2 group">
-            <div className="w-6 h-6 rounded-md bg-primary flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
-              <div className="w-3 h-3 border-2 border-primary-foreground rounded-full" />
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="relative w-7 h-7 transition-transform duration-200 group-hover:scale-110">
+              <Image
+                src="/logoNoBG.png"
+                alt="Orbit Logo"
+                fill
+                className="object-contain"
+              />
             </div>
-            <span className="font-display font-bold text-foreground">Orbit</span>
-          </a>
+            <span className="font-display font-bold text-foreground">
+              Orbit
+            </span>
+          </Link>
 
           {/* Links */}
           <div className="flex items-center gap-6 text-sm">
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors link-underline">
+            <Link
+              href="/privacy"
+              className="text-muted-foreground hover:text-foreground transition-colors link-underline"
+            >
               Privacy
-            </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors link-underline">
+            </Link>
+            <Link
+              href="/terms"
+              className="text-muted-foreground hover:text-foreground transition-colors link-underline"
+            >
               Terms
-            </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors link-underline">
+            </Link>
+            <Link
+              href="/contact"
+              className="text-muted-foreground hover:text-foreground transition-colors link-underline"
+            >
               Contact
-            </a>
+            </Link>
           </div>
 
           {/* Note */}
-          <p className="text-xs text-muted-foreground">
-            Preview is read-only.
-          </p>
+          <p className="text-xs text-muted-foreground">Preview is read-only.</p>
         </div>
 
         <div className="mt-8 pt-6 border-t border-border text-center">

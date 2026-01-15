@@ -11,7 +11,6 @@ const Philosophy: React.FC = () => {
 
   return (
     <section className="py-20 sm:py-28 relative overflow-hidden bg-[hsl(33_30%_88%)]">
-      
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center">
         <ScrollReveal>
           <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium tracking-wide uppercase bg-foreground/10 text-foreground mb-4">
@@ -27,12 +26,12 @@ const Philosophy: React.FC = () => {
             <ScrollReveal key={index} delay={index * 100}>
               <p
                 className={`font-serif italic text-xl sm:text-2xl leading-relaxed transition-all duration-300 hover:scale-[1.02] cursor-default ${
-                  principle.emphasis 
-                    ? 'font-semibold text-foreground' 
+                  principle.emphasis
+                    ? 'font-semibold text-foreground'
                     : 'text-muted-foreground'
                 }`}
               >
-                "{principle.text}"
+                &quot;{principle.text}&quot;
               </p>
             </ScrollReveal>
           ))}

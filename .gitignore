@@ -28,5 +28,7 @@ dist-ssr
 .cursor
 .codex
 .github/skills
-.agent
+.*agent
+.*shared
 .next
+.env
