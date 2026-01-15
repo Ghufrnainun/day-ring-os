@@ -16,28 +16,31 @@ import DayRing from '@/components/DayRing';
 const Index: React.FC = () => {
   return (
     <div className="min-h-screen bg-background relative">
-      {/* Global DayRing - fixed position so it spans all sections */}
-      <div className="fixed inset-0 pointer-events-none z-0 h-screen">
-        <DayRing className="h-full" />
-      </div>
-      
       <Navbar />
       <main className="relative z-10">
-        <Hero />
-        {/* Preview section with subtle background */}
+        {/* Hero & Preview with DayRing background */}
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/30 to-transparent pointer-events-none" />
-          <section className="py-20 relative">
-            <Preview />
-          </section>
+          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+            <DayRing />
+          </div>
+          <div className="relative z-10">
+            <Hero />
+            <section className="py-20">
+              <Preview />
+            </section>
+          </div>
         </div>
-        <ProblemSolution />
-        <HowItWorks />
-        <Modules />
-        <Philosophy />
-        <Pricing />
-        <FAQ />
-        <FinalCTA />
+        
+        {/* Remaining sections with subtle background */}
+        <div className="relative bg-gradient-to-b from-muted/20 via-background to-muted/10">
+          <ProblemSolution />
+          <HowItWorks />
+          <Modules />
+          <Philosophy />
+          <Pricing />
+          <FAQ />
+          <FinalCTA />
+        </div>
       </main>
       <Footer />
       <MobileCTA />

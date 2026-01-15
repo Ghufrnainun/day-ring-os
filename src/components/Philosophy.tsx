@@ -1,5 +1,4 @@
 import React from 'react';
-import DayRing from './DayRing';
 import ScrollReveal from './ScrollReveal';
 
 const Philosophy: React.FC = () => {
@@ -12,7 +11,6 @@ const Philosophy: React.FC = () => {
 
   return (
     <section className="py-20 sm:py-28 relative overflow-hidden">
-      <DayRing className="opacity-30" />
       
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center">
         <ScrollReveal>

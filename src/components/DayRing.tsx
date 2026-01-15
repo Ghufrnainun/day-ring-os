@@ -15,7 +15,7 @@ const DayRing: React.FC<DayRingProps> = ({ className = '' }) => {
   ];
 
   return (
-    <div className={`fixed inset-0 overflow-visible pointer-events-none ${className}`}>
+    <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
       <svg
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] max-w-none"
         viewBox="0 0 1000 1000"
