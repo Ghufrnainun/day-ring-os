@@ -1,17 +1,28 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Check, Calendar, DollarSign, Coffee, Sun, ListTodo, Plus, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+'use client';
 
-type Tab = "today" | "habits" | "finance";
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Check,
+  Calendar,
+  DollarSign,
+  Coffee,
+  Sun,
+  ListTodo,
+  Plus,
+  ChevronRight,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+type Tab = 'today' | 'habits' | 'finance';
 
 export function InteractivePreview() {
-  const [activeTab, setActiveTab] = useState<Tab>("today");
+  const [activeTab, setActiveTab] = useState<Tab>('today');
 
   const tabs = [
-    { id: "today", label: "Today", icon: Sun },
-    { id: "habits", label: "Habits", icon: Coffee },
-    { id: "finance", label: "Finance", icon: DollarSign },
+    { id: 'today', label: 'Today', icon: Sun },
+    { id: 'habits', label: 'Habits', icon: Coffee },
+    { id: 'finance', label: 'Finance', icon: DollarSign },
   ] as const;
 
   return (
@@ -19,7 +30,7 @@ export function InteractivePreview() {
       initial={{ opacity: 0, y: 40, rotateX: 5 }}
       whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      transition={{ duration: 0.8, ease: 'easeOut' }}
       className="relative w-full max-w-5xl mx-auto perspective-1000"
       id="preview"
     >
@@ -27,7 +38,7 @@ export function InteractivePreview() {
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-secondary/20 rounded-full blur-[100px] animate-pulse" />
       <div
         className="absolute -bottom-24 -right-24 w-96 h-96 bg-primary/20 rounded-full blur-[100px] animate-pulse"
-        style={{ animationDelay: "2s" }}
+        style={{ animationDelay: '2s' }}
       />
 
       {/* App Window Container */}
@@ -41,7 +52,7 @@ export function InteractivePreview() {
           </div>
           <div className="flex-1 text-center">
             <div className="inline-block px-4 py-1 bg-white/30 rounded-full text-[10px] tracking-[0.2em] font-bold text-primary/60 uppercase">
-              Life OS • Preview
+              Orbit • Preview
             </div>
           </div>
         </div>
@@ -58,8 +69,10 @@ export function InteractivePreview() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "flex items-center space-x-4 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 relative group",
-                    isActive ? "text-primary" : "text-muted/60 hover:text-foreground hover:bg-white/20",
+                    'flex items-center space-x-4 px-4 py-3.5 rounded-2xl text-sm font-semibold transition-all duration-300 relative group',
+                    isActive
+                      ? 'text-primary'
+                      : 'text-muted/60 hover:text-foreground hover:bg-white/20'
                   )}
                 >
                   {isActive && (
@@ -70,7 +83,10 @@ export function InteractivePreview() {
                   )}
                   <Icon
                     size={20}
-                    className={cn("relative z-10", isActive ? "text-primary" : "text-muted-foreground")}
+                    className={cn(
+                      'relative z-10',
+                      isActive ? 'text-primary' : 'text-muted-foreground'
+                    )}
                   />
                   <span className="relative z-10">{tab.label}</span>
                 </button>
@@ -89,9 +105,9 @@ export function InteractivePreview() {
                 transition={{ duration: 0.2 }}
                 className="h-full"
               >
-                {activeTab === "today" && <TodayView />}
-                {activeTab === "habits" && <HabitsView />}
-                {activeTab === "finance" && <FinanceView />}
+                {activeTab === 'today' && <TodayView />}
+                {activeTab === 'habits' && <HabitsView />}
+                {activeTab === 'finance' && <FinanceView />}
               </motion.div>
             </AnimatePresence>
           </div>
@@ -100,9 +116,12 @@ export function InteractivePreview() {
 
       {/* Caption */}
       <div className="text-center mt-12 relative z-10">
-        <p className="text-xl font-display text-muted italic">"One screen for what matters today."</p>
+        <p className="text-xl font-display text-muted italic">
+          "One screen for what matters today."
+        </p>
         <button className="mt-4 text-primary font-bold hover:tracking-widest transition-all inline-flex items-center group bg-white/50 px-6 py-2 rounded-full border border-white/40 shadow-sm">
-          EXPLORE FEATURES <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          EXPLORE FEATURES{' '}
+          <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
         </button>
       </div>
     </motion.div>
@@ -116,11 +135,15 @@ function TodayView() {
     <div className="space-y-6">
       <div className="flex justify-between items-end">
         <div>
-          <h3 className="text-2xl font-display font-bold text-foreground">Monday, Oct 24</h3>
+          <h3 className="text-2xl font-display font-bold text-foreground">
+            Monday, Oct 24
+          </h3>
           <p className="text-sm text-muted-foreground">Focus: Deep Work</p>
         </div>
         <div className="text-right">
-          <div className="text-xs font-bold text-muted uppercase tracking-wider">Progress</div>
+          <div className="text-xs font-bold text-muted uppercase tracking-wider">
+            Progress
+          </div>
           <div className="text-lg font-mono text-primary font-medium">67%</div>
         </div>
       </div>
@@ -143,8 +166,12 @@ function HabitsView() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-2xl font-display font-bold text-foreground">Daily Rituals</h3>
-        <div className="px-3 py-1 bg-secondary/10 text-secondary text-xs font-bold rounded-full">3 Day Streak</div>
+        <h3 className="text-2xl font-display font-bold text-foreground">
+          Daily Rituals
+        </h3>
+        <div className="px-3 py-1 bg-secondary/10 text-secondary text-xs font-bold rounded-full">
+          3 Day Streak
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-3">
@@ -161,8 +188,12 @@ function FinanceView() {
   return (
     <div className="space-y-6">
       <div className="bg-primary/5 p-6 rounded-2xl border border-primary/10">
-        <div className="text-sm text-muted-foreground mb-1">Available to Spend</div>
-        <div className="text-3xl font-display font-bold text-primary">$1,240.00</div>
+        <div className="text-sm text-muted-foreground mb-1">
+          Available to Spend
+        </div>
+        <div className="text-3xl font-display font-bold text-primary">
+          $1,240.00
+        </div>
         <div className="mt-4 h-2 bg-primary/10 rounded-full overflow-hidden">
           <div className="h-full bg-primary w-[65%] rounded-full" />
         </div>
@@ -173,11 +204,26 @@ function FinanceView() {
       </div>
 
       <div>
-        <h4 className="font-medium text-foreground mb-3 text-sm">Recent Transactions</h4>
+        <h4 className="font-medium text-foreground mb-3 text-sm">
+          Recent Transactions
+        </h4>
         <div className="space-y-2">
-          <TransactionItem title="Whole Foods Market" amount="-$84.20" category="Groceries" />
-          <TransactionItem title="Spotify Premium" amount="-$12.99" category="Subscription" />
-          <TransactionItem title="Client Deposit" amount="+$450.00" category="Income" isPositive />
+          <TransactionItem
+            title="Whole Foods Market"
+            amount="-$84.20"
+            category="Groceries"
+          />
+          <TransactionItem
+            title="Spotify Premium"
+            amount="-$12.99"
+            category="Subscription"
+          />
+          <TransactionItem
+            title="Client Deposit"
+            amount="+$450.00"
+            category="Income"
+            isPositive
+          />
         </div>
       </div>
     </div>
@@ -186,48 +232,84 @@ function FinanceView() {
 
 // --- Atomic Components for the Preview ---
 
-function TaskItem({ title, time, completed = false }: { title: string; time: string; completed?: boolean }) {
+function TaskItem({
+  title,
+  time,
+  completed = false,
+}: {
+  title: string;
+  time: string;
+  completed?: boolean;
+}) {
   return (
     <div
       className={cn(
-        "flex items-center p-3 rounded-xl border transition-all duration-200 group",
+        'flex items-center p-3 rounded-xl border transition-all duration-200 group',
         completed
-          ? "bg-muted/5 border-transparent opacity-60"
-          : "bg-white border-border hover:border-primary/30 hover:shadow-sm",
+          ? 'bg-muted/5 border-transparent opacity-60'
+          : 'bg-white border-border hover:border-primary/30 hover:shadow-sm'
       )}
     >
       <div
         className={cn(
-          "w-5 h-5 rounded-full border-2 mr-4 flex items-center justify-center transition-colors",
-          completed ? "bg-primary border-primary" : "border-muted group-hover:border-primary",
+          'w-5 h-5 rounded-full border-2 mr-4 flex items-center justify-center transition-colors',
+          completed
+            ? 'bg-primary border-primary'
+            : 'border-muted group-hover:border-primary'
         )}
       >
         {completed && <Check size={12} className="text-white" />}
       </div>
       <div className="flex-1">
-        <div className={cn("text-sm font-medium", completed && "line-through text-muted-foreground")}>{title}</div>
+        <div
+          className={cn(
+            'text-sm font-medium',
+            completed && 'line-through text-muted-foreground'
+          )}
+        >
+          {title}
+        </div>
         <div className="text-xs text-muted">{time}</div>
       </div>
     </div>
   );
 }
 
-function HabitItem({ title, icon, completed = false }: { title: string; icon: string; completed?: boolean }) {
+function HabitItem({
+  title,
+  icon,
+  completed = false,
+}: {
+  title: string;
+  icon: string;
+  completed?: boolean;
+}) {
   return (
     <div
       className={cn(
-        "flex items-center justify-between p-4 rounded-2xl border transition-all",
-        completed ? "bg-secondary/5 border-secondary/20" : "bg-white border-border hover:border-secondary/30",
+        'flex items-center justify-between p-4 rounded-2xl border transition-all',
+        completed
+          ? 'bg-secondary/5 border-secondary/20'
+          : 'bg-white border-border hover:border-secondary/30'
       )}
     >
       <div className="flex items-center gap-3">
         <span className="text-xl">{icon}</span>
-        <span className={cn("font-medium", completed ? "text-secondary" : "text-foreground")}>{title}</span>
+        <span
+          className={cn(
+            'font-medium',
+            completed ? 'text-secondary' : 'text-foreground'
+          )}
+        >
+          {title}
+        </span>
       </div>
       <div
         className={cn(
-          "w-8 h-8 rounded-full flex items-center justify-center transition-all",
-          completed ? "bg-secondary text-white" : "bg-muted/10 text-muted-foreground",
+          'w-8 h-8 rounded-full flex items-center justify-center transition-all',
+          completed
+            ? 'bg-secondary text-white'
+            : 'bg-muted/10 text-muted-foreground'
         )}
       >
         <Check size={16} />
@@ -258,7 +340,12 @@ function TransactionItem({
           <div className="text-xs text-muted">{category}</div>
         </div>
       </div>
-      <div className={cn("font-mono text-sm font-medium", isPositive ? "text-primary" : "text-foreground")}>
+      <div
+        className={cn(
+          'font-mono text-sm font-medium',
+          isPositive ? 'text-primary' : 'text-foreground'
+        )}
+      >
         {amount}
       </div>
     </div>

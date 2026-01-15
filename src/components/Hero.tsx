@@ -3,50 +3,58 @@ import { ArrowDown } from 'lucide-react';
 
 const Hero: React.FC = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20 pb-16">
-      
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
+    <section className="relative min-h-[90vh] flex items-center justify-center pt-20 pb-16">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center flex flex-col items-center">
+        {/* Badge/Pill */}
+        <div className="mb-8 animate-fade-up animate-float">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-sm font-medium text-primary tracking-wide shadow-sm backdrop-blur-sm">
+            v1.0 is now live
+          </span>
+        </div>
+
         {/* Headline */}
-        <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl font-semibold text-foreground leading-[1.1] animate-fade-up">
-          Your day, under control.
+        <h1 className="font-sans text-6xl sm:text-7xl lg:text-8xl font-medium text-foreground tracking-tight leading-[1] animate-fade-up-delay-1 text-balance drop-shadow-sm">
+          Run your day <br className="hidden sm:block" />
+          <span className="font-serif italic text-primary">with clarity.</span>
         </h1>
-        
+
         {/* Subheadline */}
-        <p className="mt-6 text-xl sm:text-2xl text-muted-foreground max-w-2xl mx-auto animate-fade-up-delay-1">
-          Tasks, habits, and money — in one calm system.
+        <p className="mt-8 text-xl sm:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed animate-fade-up-delay-2 text-balance font-light">
+          Plan tasks. Repeat habits gently. Track money with trust{' '}
+          <br className="hidden sm:block" />— all in one calm place.
         </p>
-        
-        {/* Bullets */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-6 animate-fade-up-delay-2">
-          <span className="chip transition-all duration-200 hover:border-primary/50 hover:-translate-y-0.5 cursor-default">Today-first clarity</span>
-          <span className="chip transition-all duration-200 hover:border-primary/50 hover:-translate-y-0.5 cursor-default">Habits without pressure</span>
-          <span className="chip-highlight transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 cursor-default">Finance you can trust</span>
-        </div>
-        
+
         {/* CTAs */}
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up-delay-3">
-          <a href="#cta" className="btn-primary text-base px-8 py-4 btn-press hover-glow">
-            Create your first day
-          </a>
-          <a 
-            href="#preview" 
-            className="btn-secondary text-base px-6 py-4 flex items-center gap-2 btn-press group"
-          >
-            See the preview
-            <ArrowDown size={16} className="transition-transform duration-200 group-hover:translate-y-1" />
-          </a>
-        </div>
-        
-        {/* Microcopy */}
-        <p className="mt-4 text-sm text-muted-foreground">
-          No pressure. Start with one day.
-        </p>
-        
-        {/* Philosophy line */}
-        <div className="mt-16 pt-8 border-t border-border max-w-xl mx-auto">
-          <p className="text-base font-serif text-muted-foreground italic">
-            "Not a habit game. Not a leaderboard. Execution clarity first."
-          </p>
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up-delay-3 w-full sm:w-auto">
+          <div className="flex flex-col items-center">
+            <div className="group flex items-center gap-2 p-1 pl-2 bg-background/60 backdrop-blur-md border border-input rounded-full shadow-sm hover:shadow-md transition-all duration-300 focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="h-12 px-4 bg-transparent border-none text-foreground placeholder:text-muted-foreground focus:outline-none w-64 text-sm"
+              />
+              <a
+                href="#cta"
+                className="h-11 px-8 rounded-full bg-[#2F4F4F] text-white font-medium hover:bg-[#2F4F4F]/90 transition-all shadow-glow flex items-center justify-center min-w-[140px]"
+              >
+                Start Free
+              </a>
+            </div>
+            <p className="mt-4 text-xs font-medium text-muted-foreground/80 flex items-center gap-6">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary/40 block"></span>{' '}
+                No guilt
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary/40 block"></span>{' '}
+                No streak pressure
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary/40 block"></span>{' '}
+                Free early access
+              </span>
+            </p>
+          </div>
         </div>
       </div>
     </section>

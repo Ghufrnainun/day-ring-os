@@ -7,14 +7,16 @@ interface DayRingProps {
 const DayRing: React.FC<DayRingProps> = ({ className = '' }) => {
   // Ring configurations - more compact, focused on hero
   const rings = [
-    { r: 280, strokeWidth: 0.5, delay: 0 },
-    { r: 220, strokeWidth: 0.75, delay: 0.6 },
-    { r: 160, strokeWidth: 1, delay: 1.2 },
-    { r: 100, strokeWidth: 1.25, delay: 1.8 },
+    { r: 280, strokeWidth: 0.3, delay: 0 },
+    { r: 220, strokeWidth: 0.5, delay: 0.6 },
+    { r: 160, strokeWidth: 0.8, delay: 1.2 },
+    { r: 100, strokeWidth: 1.0, delay: 1.8 },
   ];
 
   return (
-    <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
+    <div
+      className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}
+    >
       <svg
         className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] max-w-none"
         viewBox="0 0 600 600"

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
@@ -8,22 +10,28 @@ interface ScrollRevealProps {
   direction?: 'up' | 'down' | 'left' | 'right' | 'fade';
 }
 
-const ScrollReveal: React.FC<ScrollRevealProps> = ({ 
-  children, 
-  className = '', 
+const ScrollReveal: React.FC<ScrollRevealProps> = ({
+  children,
+  className = '',
   delay = 0,
-  direction = 'up'
+  direction = 'up',
 }) => {
   const { ref, isVisible } = useScrollReveal();
 
   const getTransform = () => {
     switch (direction) {
-      case 'up': return 'translateY(24px)';
-      case 'down': return 'translateY(-24px)';
-      case 'left': return 'translateX(24px)';
-      case 'right': return 'translateX(-24px)';
-      case 'fade': return 'none';
-      default: return 'translateY(24px)';
+      case 'up':
+        return 'translateY(24px)';
+      case 'down':
+        return 'translateY(-24px)';
+      case 'left':
+        return 'translateX(24px)';
+      case 'right':
+        return 'translateX(-24px)';
+      case 'fade':
+        return 'none';
+      default:
+        return 'translateY(24px)';
     }
   };
 

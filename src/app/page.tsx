@@ -1,4 +1,3 @@
-import React from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import { InteractivePreview as Preview } from '@/components/Preview';
@@ -13,13 +12,13 @@ import Footer from '@/components/Footer';
 import MobileCTA from '@/components/MobileCTA';
 import DayRing from '@/components/DayRing';
 
-const Index: React.FC = () => {
+export default function Home() {
   return (
     <div className="min-h-screen bg-background relative">
       <Navbar />
       <main className="relative z-10">
         {/* Hero & Preview with DayRing background */}
-        <div className="relative">
+        <div className="relative bg-grain overflow-hidden">
           <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
             <DayRing />
           </div>
@@ -30,7 +29,7 @@ const Index: React.FC = () => {
             </section>
           </div>
         </div>
-        
+
         {/* Remaining sections with subtle background */}
         <div className="relative">
           <ProblemSolution />
@@ -46,6 +45,4 @@ const Index: React.FC = () => {
       <MobileCTA />
     </div>
   );
-};
-
-export default Index;
+}

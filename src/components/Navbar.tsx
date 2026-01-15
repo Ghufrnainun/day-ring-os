@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -18,7 +20,7 @@ const Navbar: React.FC = () => {
   const navLinks = [
     { name: 'Preview', href: '#preview' },
     { name: 'How it works', href: '#how-it-works' },
-    { name: 'Modules', href: '#modules' },
+    { name: 'Features', href: '#features' },
     { name: 'FAQ', href: '#faq' },
   ];
 
@@ -54,7 +56,9 @@ const Navbar: React.FC = () => {
           <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
             <div className="w-3.5 h-3.5 border-2 border-primary-foreground rounded-full" />
           </div>
-          <span className="font-display font-bold text-lg text-primary">Orbit</span>
+          <span className="font-display font-bold text-lg text-primary">
+            Orbit
+          </span>
         </a>
 
         {/* Desktop Nav */}

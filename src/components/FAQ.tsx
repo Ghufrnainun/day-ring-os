@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import ScrollReveal from './ScrollReveal';
@@ -8,28 +10,36 @@ const FAQ: React.FC = () => {
   const faqs = [
     {
       question: 'Is Orbit a habit tracker?',
-      answer: 'Habits are one optional module. The core is your daily planner — tasks you need to do today. Habits integrate gently without gamification or pressure.',
+      answer:
+        'Habits are one optional module. The core is your daily planner — tasks you need to do today. Habits integrate gently without gamification or pressure.',
     },
     {
       question: 'Can I use Orbit just for finance?',
-      answer: 'Absolutely. Each module is independent. You can use only finance tracking, only the planner, or all three together. Your choice.',
+      answer:
+        'Absolutely. Each module is independent. You can use only finance tracking, only the planner, or all three together. Your choice.',
     },
     {
       question: 'What happens if I miss a day?',
-      answer: 'Nothing bad. There are no streaks to break (unless you want them), no penalties, no guilt-tripping notifications. Life happens. Just pick up where you left off.',
+      answer:
+        'Nothing bad. There are no streaks to break (unless you want them), no penalties, no guilt-tripping notifications. Life happens. Just pick up where you left off.',
     },
     {
       question: 'Is my financial data secure?',
-      answer: 'Yes. All data is encrypted and stored securely. We never sell your data, and you can export or delete everything at any time.',
+      answer:
+        'Yes. All data is encrypted and stored securely. We never sell your data, and you can export or delete everything at any time.',
     },
     {
       question: 'Why not just use a spreadsheet?',
-      answer: 'You could. But Orbit gives you a today-first view that shows tasks, habits, and finances together. No tab-switching, no formula debugging. Just clarity.',
+      answer:
+        'You could. But Orbit gives you a today-first view that shows tasks, habits, and finances together. No tab-switching, no formula debugging. Just clarity.',
     },
   ];
 
   return (
-    <section id="faq" className="py-20 sm:py-28 bg-gradient-to-b from-background via-surface/30 to-surface/50">
+    <section
+      id="faq"
+      className="py-20 sm:py-28 bg-gradient-to-b from-background via-surface/30 to-surface/50"
+    >
       <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center mb-12">
@@ -48,10 +58,14 @@ const FAQ: React.FC = () => {
                 }`}
               >
                 <button
-                  onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                  onClick={() =>
+                    setOpenIndex(openIndex === index ? null : index)
+                  }
                   className="w-full flex items-center justify-between p-5 text-left hover:bg-surface/50 transition-colors btn-press"
                 >
-                  <span className="font-medium text-foreground pr-4">{faq.question}</span>
+                  <span className="font-medium text-foreground pr-4">
+                    {faq.question}
+                  </span>
                   <ChevronDown
                     size={20}
                     className={`text-muted-foreground flex-shrink-0 transition-transform duration-300 ${
@@ -61,7 +75,9 @@ const FAQ: React.FC = () => {
                 </button>
                 <div
                   className={`overflow-hidden transition-all duration-300 ease-out ${
-                    openIndex === index ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+                    openIndex === index
+                      ? 'max-h-48 opacity-100'
+                      : 'max-h-0 opacity-0'
                   }`}
                 >
                   <div className="px-5 pb-5">
