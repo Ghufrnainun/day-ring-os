@@ -2,7 +2,7 @@ import React from 'react';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import SocialProof from '@/components/SocialProof';
-import Preview from '@/components/Preview';
+import { InteractivePreview as Preview } from '@/components/Preview';
 import ProblemSolution from '@/components/ProblemSolution';
 import HowItWorks from '@/components/HowItWorks';
 import Modules from '@/components/Modules';
