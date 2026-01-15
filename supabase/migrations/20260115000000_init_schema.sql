@@ -18,7 +18,7 @@ CREATE POLICY "Users can view own profile" ON public.profiles FOR SELECT USING (
 CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id);
 
 -- Trigger to create profile on signup
-CREATE OR REPLACE FUNCTION public.handle_new_user()
+CREATE OR REPLACE FUNCTION public.handle_new_user 1()
 RETURNS TRIGGER AS $$
 BEGIN
   INSERT INTO public.profiles (id, display_name, avatar_url)
@@ -251,3 +251,76 @@ CREATE TRIGGER update_tasks_modtime BEFORE UPDATE ON public.tasks FOR EACH ROW E
 CREATE TRIGGER update_notes_modtime BEFORE UPDATE ON public.notes FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_accounts_modtime BEFORE UPDATE ON public.money_accounts FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_gamification_modtime BEFORE UPDATE ON public.gamification_stats FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+
+-- 15. POINT LOGS (Phase 2: Detailed History)
+CREATE TABLE public.point_logs (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+    amount INTEGER NOT NULL,
+    reason TEXT NOT NULL, -- e.g., 'habit_done', 'streak_bonus'
+    task_instance_id UUID REFERENCES public.task_instances(id),
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE public.point_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own point logs" ON public.point_logs FOR SELECT USING (auth.uid() = user_id);
+-- Append-only system log, usually no insert/update from client directly, but we allow SELECT.
+
+
+-- 16. IDEMPOTENCY KEYS (Phase 2: Reliability)
+CREATE TABLE public.idempotency_keys (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+    key TEXT NOT NULL,
+    request_method TEXT,
+    request_path TEXT,
+    response_code INTEGER,
+    response_body JSONB,
+    created_at TIMESTAMPTZ DEFAULT now(),
+    UNIQUE(user_id, key)
+);
+
+ALTER TABLE public.idempotency_keys ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own keys" ON public.idempotency_keys FOR SELECT USING (auth.uid() = user_id);
+
+
+-- 17. REMINDER DELIVERIES (Phase 2: Debugging & History)
+CREATE TABLE public.reminder_deliveries (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+    reminder_id UUID REFERENCES public.reminders(id) ON DELETE SET NULL,
+    channel TEXT NOT NULL,
+    status TEXT NOT NULL, -- 'sent', 'failed', 'queued'
+    sent_at TIMESTAMPTZ DEFAULT now(),
+    error_message TEXT
+);
+
+ALTER TABLE public.reminder_deliveries ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can view own delivery logs" ON public.reminder_deliveries FOR SELECT USING (auth.uid() = user_id);
+
+-- 18. PERFORMANCE INDEXES
+CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON public.profiles(user_id);
+CREATE INDEX IF NOT EXISTS idx_tasks_user_id ON public.tasks(user_id);
+CREATE INDEX IF NOT EXISTS idx_tasks_user_deleted ON public.tasks(user_id, deleted_at);
+
+CREATE INDEX IF NOT EXISTS idx_task_instances_task_id ON public.task_instances(task_id);
+CREATE INDEX IF NOT EXISTS idx_task_instances_status ON public.task_instances(status);
+CREATE INDEX IF NOT EXISTS idx_task_instances_date_status ON public.task_instances(date, status);
+
+CREATE INDEX IF NOT EXISTS idx_transactions_user_id ON public.transactions(user_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_from_account ON public.transactions(from_account_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_to_account ON public.transactions(to_account_id);
+CREATE INDEX IF NOT EXISTS idx_money_accounts_user_id ON public.money_accounts(user_id);
+
+CREATE INDEX IF NOT EXISTS idx_daily_snapshots_user_date ON public.daily_snapshots(user_id, date);
+
+CREATE INDEX IF NOT EXISTS idx_notes_user_id ON public.notes(user_id);
+CREATE INDEX IF NOT EXISTS idx_notes_template_type ON public.notes(template_type);
+
+CREATE INDEX IF NOT EXISTS idx_repeat_rules_task_id ON public.repeat_rules(task_id);
+
+CREATE INDEX IF NOT EXISTS idx_reminders_task_id ON public.reminders(task_id);
+CREATE INDEX IF NOT EXISTS idx_reminders_scheduled ON public.reminders(scheduled_at) WHERE is_active = TRUE;
+
+CREATE INDEX IF NOT EXISTS idx_audit_logs_user_id ON public.audit_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_entity ON public.audit_logs(entity_type, entity_id);

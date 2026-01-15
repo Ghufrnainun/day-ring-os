@@ -1,4 +1,4 @@
-# 📘 PRD — Planner‑Centric Life & Finance OS
+#  PRD - Planner-Centric Life & Finance OS
 
 > **Status:** Final v1.1 (Schema-Reviewed, Migration-Ready)
 > **Last Updated:** 2026-01-15
@@ -25,7 +25,7 @@ Brand Intent:
 **Supporting Systems (Modular):**
 
 - Habit & Reminder Engine (optional)
-- Budgeting & Multi‑Account Finance (optional)
+- Budgeting & Multi-Account Finance (optional)
 - Gamification Layer (points, streaks, levels)
 - AI Insight Layer (future, optional)
 
@@ -46,7 +46,7 @@ Brand Intent:
 
 ### Logical Day Concept (CRITICAL)
 
-All activities are mapped to a **logical_day (DATE)** derived from the user’s timezone.
+All activities are mapped to a **logical_day (DATE)** derived from the user's timezone.
 
 Rules:
 
@@ -62,9 +62,9 @@ This prevents edge cases across timezones (late-night confirmations, travel, DST
 
 During onboarding, user selects modules:
 
-- ☑ Daily Planner (default)
-- ☑ Reminders & Habits
-- ☑ Budgeting & Finance
+- [x] Daily Planner (default)
+- [x] Reminders & Habits
+- [x] Budgeting & Finance
 
 Modules can be enabled/disabled later.
 
@@ -74,7 +74,7 @@ Modules can be enabled/disabled later.
 
 This section describes **how a real user moves through the app**, end-to-end, on a normal day.
 
-### 4.1 Onboarding → First Day
+### 4.1 Onboarding -> First Day
 
 1. User signs up / logs in
 2. Selects active modules:
@@ -92,7 +92,7 @@ The Today Screen is the **single daily control center**.
 
 User can:
 
-1. View list of today’s tasks & habits
+1. View list of today's tasks & habits
 2. Quick add:
    - Task
    - Habit
@@ -113,13 +113,13 @@ User can:
 2. System generates task_instances per logical_day
 3. Reminder is sent (email / push, best-effort)
 4. User confirms action:
-   - Mark as done → earn points
-   - No confirmation → auto-mark as skipped (UI: “Missed today”)
+   - Mark as done -> earn points
+   - No confirmation -> auto-mark as skipped (UI: "Missed today")
 5. Streak updates based on daily habit completion
 
 ---
 
-### 4.4 Notes → Tasks Flow
+### 4.4 Notes -> Tasks Flow
 
 1. User creates a Note (e.g. Bills, Meeting, Weekly Planning)
 2. Adds checklist items inside the note
@@ -130,9 +130,9 @@ Notes remain as context and are not bound to a single day.
 
 ---
 
-### 4.5 Tasks → Finance Flow
+### 4.5 Tasks -> Finance Flow
 
-1. User completes a Task related to spending (e.g. “Pay rent”)
+1. User completes a Task related to spending (e.g. "Pay rent")
 2. User records a Transaction:
    - Selects account
    - Enters amount
@@ -147,8 +147,8 @@ Notes remain as context and are not bound to a single day.
 
 At the end of a logical_day:
 
-- Unconfirmed habit instances → marked as skipped
-- Delayed tasks → moved to next available day
+- Unconfirmed habit instances -> marked as skipped
+- Delayed tasks -> moved to next available day
 - Daily snapshot is generated:
   - Tasks done
   - Money in/out
@@ -167,7 +167,7 @@ At the end of a logical_day:
 
 ---
 
-### 4.8 Long-Term Usage (Phase 3–4)
+### 4.8 Long-Term Usage (Phase 3-4)
 
 - Historical comparisons
 - AI-assisted summaries (optional)
@@ -179,7 +179,7 @@ At the end of a logical_day:
 
 ### 5.1 Daily Planner (CORE)
 
-- Create tasks (one‑time or scheduled)
+- Create tasks (one-time or scheduled)
 - Assign date & time
 - Status tracking
 - Optional notes
@@ -192,7 +192,7 @@ Habits are **repeatable tasks**, but UX explicitly distinguishes **Task vs Habit
 
 **Add Button UX (Recommended):**
 
-- `+ Add` → dropdown:
+- `+ Add` -> dropdown:
   - **Add Task** (one-time or scheduled)
   - **Add Habit** (guided repeat setup)
 
@@ -213,7 +213,7 @@ Habit features:
 
 System mapping:
 
-- UI: “Missed today” / “Mission failed” / game-style wording
+- UI: "Missed today" / "Mission failed" / game-style wording
 - System status: `skipped`
 
 This avoids guilt-driven UX while keeping data explicit.
@@ -224,17 +224,17 @@ This approach balances **clarity for users** with **schema simplicity**.
 
 ### 5.3 Gamification Layer
 
-**Gamification applies ONLY to Habits (not one‑off Tasks).**
+**Gamification applies ONLY to Habits (not one-off Tasks).**
 
 Design rationale:
 
 - Tasks = execution / productivity
-- Habits = behavior change → reward system belongs here
+- Habits = behavior change -> reward system belongs here
 
 Rules:
 
 - Points earned **only when a Habit instance is completed**
-- One‑off Tasks give **no points** (to avoid grinding)
+- One-off Tasks give **no points** (to avoid grinding)
 - Daily point cap still applies
 - Streak tracking **per day** (if at least one habit completed)
 
@@ -244,7 +244,7 @@ Data rules:
 - `gamification_stats` stores aggregated values only
 - **Future note (Phase 2):** introduce `point_logs` for detailed audit & analytics
 
-Levels & achievements are derived from long‑term habit consistency.
+Levels & achievements are derived from long-term habit consistency.
 
 ---
 
@@ -254,7 +254,7 @@ Levels & achievements are derived from long‑term habit consistency.
 
   - Bank
   - Cash
-  - E‑wallet
+  - E-wallet
   - Investment
 
 - Transactions as flows:
@@ -275,8 +275,8 @@ They are designed to capture thinking, planning, coordination, and references th
 - Notes are **not the core workflow**
 - The **Planner (tasks & habits)** remains the single source of execution truth
 
-> Notes exist to answer _“what is this about?”_,\
-> Planner exists to answer _“what do I need to do today?”_
+> Notes exist to answer _"what is this about|"_,\
+> Planner exists to answer _"what do I need to do today|"_
 
 ---
 
@@ -346,14 +346,14 @@ Example flow:
 
 ```
 Bills Note
- → Checklist: “Pay rent”
- → Convert to Task
- → Task completed
- → Transaction recorded (linked)
+ -> Checklist: "Pay rent"
+ -> Convert to Task
+ -> Task completed
+ -> Transaction recorded (linked)
 
 ```
 
-This enables **Planner ↔ Notes ↔ Finance** correlation without forcing users into complex workflows.
+This enables **Planner <-> Notes <-> Finance** correlation without forcing users into complex workflows.
 
 ---
 
@@ -375,10 +375,10 @@ This enables **Planner ↔ Notes ↔ Finance** correlation without forcing users
 
 ---
 
-## 6. UI / UX PRINCIPLES & DECISIONS (Final — Locked)
+## 6. UI / UX PRINCIPLES & DECISIONS (Final - Locked)
 
 > This section translates product philosophy into **concrete UX & visual rules**.
-> It exists to prevent feature creep, habit‑game drift, and trendy-but-fatiguing design.
+> It exists to prevent feature creep, habit-game drift, and trendy-but-fatiguing design.
 
 ---
 
@@ -388,16 +388,16 @@ This enables **Planner ↔ Notes ↔ Finance** correlation without forcing users
 
 - Calm
 - Soft
-- Earth‑tone inspired
+- Earth-tone inspired
 - Low visual fatigue
 - Adult & trustworthy
 
-**Explicit anti‑patterns (DO NOT USE):**
+**Explicit anti-patterns (DO NOT USE):**
 
-- ❌ Neon or high‑contrast gradients
-- ❌ Blue as primary brand identity
-- ❌ Gamification visuals on landing page
-- ❌ Excessive icons or decorative noise
+- No Neon or high-contrast gradients
+- No Blue as primary brand identity
+- No Gamification visuals on landing page
+- No Excessive icons or decorative noise
 
 **Design principle:**
 
@@ -411,22 +411,22 @@ This enables **Planner ↔ Notes ↔ Finance** correlation without forcing users
 
 Guidelines:
 
-- Warm off‑white / beige backgrounds
+- Warm off-white / beige backgrounds
 - Muted green / olive as primary accent
 - Brown / terracotta as secondary accent
-- Blue allowed **only** for informational states (non‑branding)
+- Blue allowed **only** for informational states (non-branding)
 
 Color usage rules:
 
 - Color = signal, not decoration
 - Accent colors are used sparingly
-- No rainbow or multi‑accent UI
+- No rainbow or multi-accent UI
 
 ---
 
-### 6.3 Light‑First Interface Strategy
+### 6.3 Light-First Interface Strategy
 
-- Dashboard is **light‑first by default**
+- Dashboard is **light-first by default**
 - Dark mode is optional and deferred (Phase 2+)
 
 Rationale:
@@ -438,7 +438,7 @@ Rationale:
 
 ### 6.4 Navigation Structure
 
-**Chosen:** Option A — Minimalist
+**Chosen:** Option A - Minimalist
 
 Navigation may be implemented as **sidebar or top navbar**, but structure is fixed:
 
@@ -481,11 +481,11 @@ Habit visuals should:
 - Be slightly more expressive than tasks
 - Encourage consistency without pressure
 
-Examples (non‑binding):
+Examples (non-binding):
 
 - Subtle accent color
 - Repeat icon
-- Gentle micro‑feedback (no XP bars)
+- Gentle micro-feedback (no XP bars)
 
 Rule:
 
@@ -495,11 +495,11 @@ Rule:
 
 ### 6.7 Finance UX Placement & Trust Model
 
-Finance is treated as **serious & high‑trust**.
+Finance is treated as **serious & high-trust**.
 
 Rules:
 
-- Full editing, history, reconciliation → **Finance screen only**
+- Full editing, history, reconciliation -> **Finance screen only**
 - Quick logging (expense / income):
   - Allowed from Today Screen
   - Allowed for past days
@@ -536,7 +536,7 @@ UX guarantees:
 
 - Users may have empty days with no penalty
 - No forced inputs
-- No guilt‑driven messaging
+- No guilt-driven messaging
 
 If a user failed yesterday:
 
@@ -549,7 +549,7 @@ Example tone:
 
 ---
 
-### 6.10 30‑Second Usage Rule
+### 6.10 30-Second Usage Rule
 
 If a user has **30 seconds**, they must be able to:
 
@@ -567,14 +567,14 @@ Landing page is **aspirational**, not operational.
 
 Rules:
 
-- Earth‑tone palette (slightly richer than dashboard)
+- Earth-tone palette (slightly richer than dashboard)
 - Minimal animation
 - No gamification elements
 - No dense metrics or charts
 
 **Interactive preview rules:**
 
-- Read‑only UI
+- Read-only UI
 - Displays only core modules:
   - Tasks
   - Habits
@@ -612,7 +612,7 @@ This section defines **how the UI feels at a component level**, regardless of fe
 
 Guidelines:
 
-- Cards: medium-rounded (≈12–16px)
+- Cards: medium-rounded (~12-16px)
 - Buttons: rounded (pill for primary actions, soft radius for secondary)
 - Inputs: rounded with soft borders
 - Modals & sheets: rounded container, never full-bleed
@@ -746,7 +746,7 @@ UI guidance:
 
 Example tone:
 
-> "Nothing planned today — and that’s okay." "You can rest, or add something when you’re ready."
+> "Nothing planned today - and that's okay." "You can rest, or add something when you're ready."
 
 ---
 
@@ -769,7 +769,7 @@ Guidelines:
 
 - Finance errors:
 
-  - Insufficient balance → soft warning (configurable)
+  - Insufficient balance -> soft warning (configurable)
   - No destructive actions without confirmation
 
 - System delays (cron, sync):
@@ -779,7 +779,7 @@ Guidelines:
 
 Tone example:
 
-> "We couldn’t complete this right now. Nothing is lost."
+> "We couldn't complete this right now. Nothing is lost."
 
 ---
 
@@ -885,7 +885,7 @@ Still enforced:
 
 ---
 
-### 6.21 Board-Style Workspace (OPTIONAL, SUPPORTING — NEW)
+### 6.21 Board-Style Workspace (OPTIONAL, SUPPORTING - NEW)
 
 Orbit **may** provide a **board-style workspace** inspired by card-based planning tools (sticky notes / kanban-like), but with **strict constraints** so it does not replace the Today Screen or Planner.
 
@@ -908,12 +908,12 @@ It does **not** exist to:
 - Replace Tasks / Habits
 - Become a full kanban or Notion-style workspace
 
-> Board View answers: _“How do I roughly organize my thoughts?”_
-> Today Screen answers: _“What am I doing \***\*today\*\***?”_
+> Board View answers: _"How do I roughly organize my thoughts|"_
+> Today Screen answers: _"What am I doing \***\*today\*\***|"_
 
 ---
 
-#### Scope (Phase 1 – Limited)
+#### Scope (Phase 1 - Limited)
 
 - Board is implemented **inside Notes**, not as a separate core module
 - Each board belongs to a **Note workspace**
@@ -970,11 +970,11 @@ Motion:
 
 #### Explicit Constraints (DO NOT VIOLATE)
 
-- ❌ No WIP limits
-- ❌ No status-based columns enforced by system
-- ❌ No progress bars or percentages
-- ❌ No gamification tied to cards
-- ❌ No analytics on board activity
+- No No WIP limits
+- No No status-based columns enforced by system
+- No No progress bars or percentages
+- No No gamification tied to cards
+- No No analytics on board activity
 
 ---
 
@@ -983,7 +983,7 @@ Motion:
 - **Phase 1:** Notes-based board for planning & dumping
 - **Phase 2:** Boards usable in weekly/monthly review context
 - **Phase 3:** Optional templates (e.g. Weekly Plan Board)
-- **Phase 4:** AI summarization of board → suggested Tasks (optional)
+- **Phase 4:** AI summarization of board -> suggested Tasks (optional)
 
 ---
 
@@ -995,25 +995,25 @@ If a feature causes users to:
 - Avoid Today Screen
 - Treat cards as execution
 
-👉 that feature is **out of scope** and must be redesigned or removed.
+ that feature is **out of scope** and must be redesigned or removed.
 
 ---
 
-> Orbit is **planner-centric**. Boards support thinking — they never replace doing.
+> Orbit is **planner-centric**. Boards support thinking - they never replace doing.
 
 ---
 
-## 7. Pricing‑Ready Feature Gating
+## 7. Pricing-Ready Feature Gating
 
 | Feature             | Free  | Pro (Full)               |
 | ------------------- | ----- | ------------------------ |
-| Tasks / Planner     | ✅    | ✅                       |
-| Reminders           | ❌    | ✅                       |
-| Habits (repeat)     | ❌    | ✅                       |
+| Tasks / Planner     | Yes    | Yes                       |
+| Reminders           | No    | Yes                       |
+| Habits (repeat)     | No    | Yes                       |
 | Multi Accounts      | 1     | Unlimited                |
 | Gamification        | Basic | Full                     |
-| Reviews & Insights  | ❌    | ✅                       |
-| AI‑Powered Insights | ❌    | Optional Add‑on (Future) |
+| Reviews & Insights  | No    | Yes                       |
+| AI-Powered Insights | No    | Optional Add-on (Future) |
 
 **Gamification definition:**
 
@@ -1024,11 +1024,11 @@ If a feature causes users to:
 
 ## 8. Technical Implementation Logic (Schema Validation)
 
-### 8.1 Schema Validation — Calendar & Today (Executable Contract)
+### 8.1 Schema Validation - Calendar & Today (Executable Contract)
 
 This section ensures the schema supports the **Today Screen**, **Weekly slider**, and **Monthly calendar click** without ambiguity. This is written so it can be executed directly in implementation.
 
-### 8.2 View → Source of Truth
+### 8.2 View -> Source of Truth
 
 - **Today Screen (execution):** `task_instances` + `transactions`
 - **Weekly (planning):** `task_instances` (planned per day) + light day density
@@ -1065,7 +1065,7 @@ This keeps planning queries simple and avoids extra columns.
 
 ---
 
-### 8.4 Today Screen — canonical query behavior
+### 8.4 Today Screen - canonical query behavior
 
 Input: `user_id`, `logical_day`
 
@@ -1088,7 +1088,7 @@ Status rules:
 
 ---
 
-### 8.5 Weekly slider — canonical behavior
+### 8.5 Weekly slider - canonical behavior
 
 Input: `user_id`, `week_start_day`..`week_end_day`
 
@@ -1112,7 +1112,7 @@ Allowed actions:
 
 ---
 
-### 8.6 Monthly grid — canonical behavior
+### 8.6 Monthly grid - canonical behavior
 
 Input: `user_id`, `month_start_day`..`month_end_day`
 
@@ -1151,23 +1151,23 @@ Recommended:
 
 ### 8.8 Consistency rules (anti-bug)
 
-- All day calculations use `users_profile.timezone` → derive `logical_day` consistently.
+- All day calculations use `users_profile.timezone` -> derive `logical_day` consistently.
 - Instances are the planning surface; tasks are templates.
 - Points are derived from `habit_logs` (done confirmations), not arbitrary counters.
 - Delayed tasks must preserve `original_logical_day` and `delayed_to_day`.
 
 ---
 
-## 9. API Contract (Scalable — TODO)
+## 9. API Contract (Scalable - TODO)
 
 > This section will define stable endpoints and response shapes for Today / Weekly / Monthly / Habits / Notes / Finance.
 
 **Minimum endpoints (Phase 1):**
 
 - `POST /api/ensure-instances` (range)
-- `GET /api/today?day=YYYY-MM-DD`
-- `GET /api/week?start=YYYY-MM-DD&end=YYYY-MM-DD`
-- `GET /api/month?start=YYYY-MM-DD&end=YYYY-MM-DD`
+- `GET /api/today|day=YYYY-MM-DD`
+- `GET /api/week|start=YYYY-MM-DD&end=YYYY-MM-DD`
+- `GET /api/month|start=YYYY-MM-DD&end=YYYY-MM-DD`
 - `POST /api/tasks` (create task/habit)
 - `PATCH /api/task-instances/:id` (done / skipped / delayed)
 - `POST /api/transactions` (quick log)
@@ -1182,7 +1182,7 @@ Conventions (LOCKED):
 
 ---
 
-## 10. Security & Data Isolation (Supabase RLS — LOCKED)
+## 10. Security & Data Isolation (Supabase RLS - LOCKED)
 
 This section defines **mandatory Row Level Security (RLS)** rules. Misconfiguration here is considered a **critical vulnerability**.
 
@@ -1217,11 +1217,11 @@ See **Final Database Schema** section for specific SQL implementation.
 
 All joins must be **safe by construction**:
 
-- `task_instances.task_id → tasks.id` is safe because:
+- `task_instances.task_id -> tasks.id` is safe because:
 
   - both tables enforce `user_id = auth.uid()`
 
-- `transactions.task_instance_id → task_instances.id` is safe only if:
+- `transactions.task_instance_id -> task_instances.id` is safe only if:
   - transaction `user_id` matches instance `user_id`
 
 Do **not** rely on frontend filtering for security.
@@ -1246,10 +1246,10 @@ Rules:
 
 ### 10.6 Explicit Anti-Patterns (DO NOT DO)
 
-- ❌ Disable RLS for debugging
-- ❌ Use `public` read access
-- ❌ Trust frontend `user_id` input
-- ❌ Cross-user analytics queries
+- No Disable RLS for debugging
+- No Use `public` read access
+- No Trust frontend `user_id` input
+- No Cross-user analytics queries
 
 ---
 
@@ -1259,12 +1259,12 @@ Before launch:
 
 - Verify `RLS enabled` on all tables in Supabase Dashboard.
 - As user A, attempt to read/insert rows owned by user B (must fail).
-- Attempt to insert a transaction referencing another user’s account_id (must fail).
+- Attempt to insert a transaction referencing another user's account_id (must fail).
 - Attempt unauthenticated queries (must fail).
 
 ---
 
-# 🗄️ FINAL DATABASE SCHEMA (Supabase / PostgreSQL)
+#  FINAL DATABASE SCHEMA (Supabase / PostgreSQL)
 
 ## 1. users (Supabase Auth)
 
@@ -1336,13 +1336,13 @@ rule_config JSONB
 **`rule_config` JSONB Structure:**
 
 ```jsonc
-// rule_type: "daily" — repeats every day at specified time
+// rule_type: "daily" - repeats every day at specified time
 { "time": "21:00" }
 
-// rule_type: "weekly" — repeats on specific days of the week
+// rule_type: "weekly" - repeats on specific days of the week
 { "days": ["mon", "wed", "fri"], "time": "09:00" }
 
-// rule_type: "custom" — repeats at custom interval
+// rule_type: "custom" - repeats at custom interval
 { "interval": 3, "unit": "days", "time": "18:00" }
 // Valid units: "days", "weeks", "months"
 ```
@@ -1412,7 +1412,7 @@ note_id (uuid, nullable)     -- FK to notes table
 created_at
 ```
 
-> Optional link to `task_instances` enables planner ↔ finance correlation without forcing usage.
+> Optional link to `task_instances` enables planner <-> finance correlation without forcing usage.
 
 > Account balances are updated transactionally to keep consistency. Periodic reconciliation can be done by recalculating from transaction history.
 
@@ -1478,24 +1478,24 @@ UNIQUE(note_id, task_id)
 
 ```
 Note
- ├── generates → Task
- ├── references → Transaction
+ ├── generates -> Task
+ ├── references -> Transaction
  │
 Task
- ├── executed as → Task Instance
+ ├── executed as -> Task Instance
  │
 Transaction
- ├── may link → Task Instance
- └── may link → Note
+ ├── may link -> Task Instance
+ └── may link -> Note
 ```
 
 ---
 
-## 🔧 DATABASE SCHEMA IMPROVEMENTS (Pre-Migration Review)
+##  DATABASE SCHEMA IMPROVEMENTS (Pre-Migration Review)
 
-> **Status:** Reviewed — Apply these refinements before generating migrations.
+> **Status:** Reviewed - Apply these refinements before generating migrations.
 
-### Issue #1: `gamification_stats` — Missing Streak Fields
+### Issue #1: `gamification_stats` - Missing Streak Fields
 
 PRD mentions "streak per day" but fields are missing.
 
@@ -1516,11 +1516,11 @@ CREATE TABLE gamification_stats (
 
 ---
 
-### Issue #2: `transactions.note` vs `note_id` — Naming Collision
+### Issue #2: `transactions.note` vs `note_id` - Naming Collision
 
 Current schema has both `note` (text) and `note_id` (FK), which is confusing.
 
-**Fix:** Rename `note` → `description`
+**Fix:** Rename `note` -> `description`
 
 ```sql
 CREATE TABLE transactions (
@@ -1540,7 +1540,7 @@ CREATE TABLE transactions (
 
 ---
 
-### Issue #3: `notes` & `notes_task_links` — Proper SQL Definition
+### Issue #3: `notes` & `notes_task_links` - Proper SQL Definition
 
 Original PRD had formatting issues. Here's the corrected version:
 
@@ -1586,7 +1586,7 @@ CREATE TABLE notes_task_links (
 
 ---
 
-### Issue #4: Soft Delete Pattern — Missing `deleted_at`
+### Issue #4: Soft Delete Pattern - Missing `deleted_at`
 
 PRD states "prefer soft delete" but fields are missing.
 
@@ -1605,7 +1605,7 @@ ALTER TABLE money_accounts ADD COLUMN is_active BOOLEAN DEFAULT TRUE;
 
 ---
 
-### Issue #5: `audit_logs` — Enhanced Tracing
+### Issue #5: `audit_logs` - Enhanced Tracing
 
 Original schema lacks entity tracking for better debugging.
 
@@ -1673,7 +1673,7 @@ CREATE INDEX idx_audit_logs_entity ON audit_logs(entity_type, entity_id);
 
 Below is the **final corrected schema** ready for migration:
 
-#### 1. users (Supabase Auth — no migration needed)
+#### 1. users (Supabase Auth - no migration needed)
 
 ```sql
 -- Managed by Supabase Auth
@@ -1852,7 +1852,7 @@ CREATE TABLE notes_task_links (
 
 ## 7. Scalablity & Architecture Notes
 
-- Planner‑centric schema (no duplication)
+- Planner-centric schema (no duplication)
 - Habits = repeatable tasks (no refactor later)
 - Finance system ready for bank sync (Phase 3)
 - RLS enforced per user
@@ -1863,17 +1863,17 @@ CREATE TABLE notes_task_links (
 
 ## 8. Product Phases & Evolution Roadmap
 
-> This section defines **what to build, why, and how to validate** at each phase. Each phase should feel like a complete, usable product—not a half-step.
+> This section defines **what to build, why, and how to validate** at each phase. Each phase should feel like a complete, usable product-not a half-step.
 
 ---
 
-### Phase 1 — MVP (Individual User)
+### Phase 1 - MVP (Individual User)
 
 **Goal:** Make users come back **every day** without feeling overwhelmed.
 
 **Primary Question:**
 
-> “Can this app become part of my daily routine?”
+> "Can this app become part of my daily routine|"
 
 **What to Build (Instructional):**
 
@@ -1901,18 +1901,18 @@ CREATE TABLE notes_task_links (
 
 **Success Signals:**
 
-- User opens app ≥1× per day
+- User opens app >=1x per day
 - User completes at least 1 task or habit per day
 
 ---
 
-### Phase 2 — Power User & Retention
+### Phase 2 - Power User & Retention
 
 **Goal:** Help users **see progress and meaning** over time.
 
 **Primary Question:**
 
-> “Am I actually improving?”
+> "Am I actually improving|"
 
 **What to Build (Instructional):**
 
@@ -1941,18 +1941,18 @@ CREATE TABLE notes_task_links (
 
 ---
 
-### Phase 3 — Monetization & Commitment
+### Phase 3 - Monetization & Commitment
 
 **Goal:** Make users **willing to pay** because stopping feels like a loss.
 
 **Primary Question:**
 
-> “What do I lose if I stop using this app?”
+> "What do I lose if I stop using this app|"
 
 **What to Build (Instructional):**
 
 - Advanced analytics:
-  - Habit ↔ task ↔ finance correlations
+  - Habit <-> task <-> finance correlations
   - Historical comparisons (this month vs last month)
 - Commitment-grade reminders:
   - Multiple reminder windows
@@ -1969,18 +1969,18 @@ CREATE TABLE notes_task_links (
 
 **Success Signals:**
 
-- Users upgrade after 30–60 days
+- Users upgrade after 30-60 days
 - Pro users engage with analytics weekly
 
 ---
 
-### Phase 4 — Life OS & Intelligence Layer
+### Phase 4 - Life OS & Intelligence Layer
 
 **Goal:** Become a **long-term personal companion**, not just a tool.
 
 **Primary Question:**
 
-> “Does this app understand me better over time?”
+> "Does this app understand me better over time|"
 
 **What to Build (Instructional):**
 
@@ -2009,7 +2009,7 @@ AI is **assistive**, not authoritative. The system remains user-controlled.
 ## 8. Finalized Design Decisions (v1)
 
 - Task vs Habit UX:
-  - `+ Add` → **Add Task / Add Habit** (UX distinction only)
+  - `+ Add` -> **Add Task / Add Habit** (UX distinction only)
   - Single schema (`tasks` + `repeat_rules`)
 - Reminder:
 - Email first (reliable, default)
@@ -2017,12 +2017,12 @@ AI is **assistive**, not authoritative. The system remains user-controlled.
 
 Reminder behavior (MVP):
 
-- Best‑effort delivery
+- Best-effort delivery
 - Manual confirmation by user
 - Auto-expire at logical day end if no action
 - Balance strategy: User inputs opening balance, system maintains current balance
 - Gamification:
-  - Points **habit‑only** (no points for one‑off tasks)
+  - Points **habit-only** (no points for one-off tasks)
   - Daily cap
   - Streak per day (based on habit completion)
 
@@ -2112,7 +2112,7 @@ For reliable retries across networks, introduce a small store:
 
 ### 10.3 Domain: Tasks & Today
 
-#### GET /api/v1/today?date=YYYY-MM-DD
+#### GET /api/v1/today|date=YYYY-MM-DD
 
 Returns Today payload resolved to user `logical_day`.
 
@@ -2143,7 +2143,7 @@ Returns Today payload resolved to user `logical_day`.
 }
 ```
 
-#### GET /api/v1/tasks?from=YYYY-MM-DD&to=YYYY-MM-DD&status=pending&limit=50&cursor=...
+#### GET /api/v1/tasks|from=YYYY-MM-DD&to=YYYY-MM-DD&status=pending&limit=50&cursor=...
 
 List tasks/instances by date range (Phase 2+). Useful for calendar views.
 
@@ -2205,7 +2205,7 @@ Creates a habit via a task template + repeat rule + reminder defaults.
 }
 ```
 
-#### GET /api/v1/habits?limit=50&cursor=...
+#### GET /api/v1/habits|limit=50&cursor=...
 
 List habit templates.
 
@@ -2236,7 +2236,7 @@ Create a note (blank or template).
 }
 ```
 
-#### GET /api/v1/notes?template_type=billing&q=bills&limit=50&cursor=...
+#### GET /api/v1/notes|template_type=billing&q=bills&limit=50&cursor=...
 
 List notes (Phase 1 supports basic list; Phase 2 adds filtering/search).
 
@@ -2264,7 +2264,7 @@ Effect:
 
 - Creates `tasks` row
 - Creates `task_instances` for the scheduled logical day
-- Links task ↔ note (via `note_id` or `notes_task_links`)
+- Links task <-> note (via `note_id` or `notes_task_links`)
 
 ### 10.6 Domain: Finance
 
@@ -2307,7 +2307,7 @@ Rules:
 - Updates `current_balance` on affected accounts
 - Validates funds if `from_account_id` exists (configurable: strict vs soft)
 
-#### GET /api/v1/transactions?from=YYYY-MM-DD&to=YYYY-MM-DD&type=expense&account_id=...&limit=50&cursor=...
+#### GET /api/v1/transactions|from=YYYY-MM-DD&to=YYYY-MM-DD&type=expense&account_id=...&limit=50&cursor=...
 
 Paginated transaction history.
 
@@ -2363,7 +2363,7 @@ Reminder reliability notes (Phase 1):
 
 ## 10.10 Scalability Notes & Decisions (Keep in PRD)
 
-This section captures **important implementation notes** so the product remains scalable across Phase 1–4.
+This section captures **important implementation notes** so the product remains scalable across Phase 1-4.
 
 ### A) Client Direct vs Server Route Matrix (Recommended)
 
@@ -2493,4 +2493,4 @@ Edits:
 
 ---
 
-Next Step: UI wireframe → implementation plan → repository scaffolding
+Next Step: UI wireframe -> implementation plan -> repository scaffolding
