@@ -1,5 +1,6 @@
 import React from 'react';
 import DayRing from './DayRing';
+import ScrollReveal from './ScrollReveal';
 
 const Philosophy: React.FC = () => {
   const principles = [
@@ -14,30 +15,35 @@ const Philosophy: React.FC = () => {
       <DayRing className="opacity-30" />
       
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center">
-        <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-12">
-          Our Philosophy
-        </h2>
+        <ScrollReveal>
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-12">
+            Our Philosophy
+          </h2>
+        </ScrollReveal>
 
         <div className="space-y-6">
           {principles.map((principle, index) => (
-            <p
-              key={index}
-              className={`text-xl sm:text-2xl leading-relaxed ${
-                principle.emphasis 
-                  ? 'font-display font-bold text-foreground' 
-                  : 'text-muted-foreground'
-              }`}
-            >
-              "{principle.text}"
-            </p>
+            <ScrollReveal key={index} delay={index * 100}>
+              <p
+                className={`text-xl sm:text-2xl leading-relaxed transition-all duration-300 hover:scale-[1.02] cursor-default ${
+                  principle.emphasis 
+                    ? 'font-display font-bold text-foreground' 
+                    : 'text-muted-foreground'
+                }`}
+              >
+                "{principle.text}"
+              </p>
+            </ScrollReveal>
           ))}
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border">
-          <p className="text-muted-foreground">
-            Built for people who want to do less, better.
-          </p>
-        </div>
+        <ScrollReveal delay={400}>
+          <div className="mt-12 pt-8 border-t border-border">
+            <p className="text-muted-foreground">
+              Built for people who want to do less, better.
+            </p>
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );

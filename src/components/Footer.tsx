@@ -6,22 +6,22 @@ const Footer: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           {/* Brand */}
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-primary flex items-center justify-center">
+          <a href="#" className="flex items-center gap-2 group">
+            <div className="w-6 h-6 rounded-md bg-primary flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
               <div className="w-3 h-3 border-2 border-primary-foreground rounded-full" />
             </div>
             <span className="font-display font-bold text-foreground">Orbit</span>
-          </div>
+          </a>
 
           {/* Links */}
           <div className="flex items-center gap-6 text-sm">
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors link-underline">
               Privacy
             </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors link-underline">
               Terms
             </a>
-            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="#" className="text-muted-foreground hover:text-foreground transition-colors link-underline">
               Contact
             </a>
           </div>

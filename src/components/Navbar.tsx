@@ -31,8 +31,8 @@ const Navbar: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Brand */}
-          <a href="#" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+          <a href="#" className="flex items-center gap-2 group">
+            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center transition-transform duration-200 group-hover:scale-105">
               <div className="w-4 h-4 border-2 border-primary-foreground rounded-full" />
             </div>
             <span className="font-display font-bold text-xl text-foreground">Orbit</span>
@@ -44,7 +44,7 @@ const Navbar: React.FC = () => {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors link-underline"
               >
                 {link.label}
               </a>
@@ -53,7 +53,7 @@ const Navbar: React.FC = () => {
 
           {/* Desktop CTA */}
           <div className="hidden md:block">
-            <a href="#cta" className="btn-primary text-sm">
+            <a href="#cta" className="btn-primary text-sm btn-press hover-glow">
               Create your first day
             </a>
           </div>
@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-foreground"
+            className="md:hidden p-2 text-foreground transition-transform duration-200 hover:scale-110 active:scale-95"
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -69,25 +69,34 @@ const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border animate-fade-in">
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-out ${
+            isMobileMenuOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+        >
+          <div className="py-4 border-t border-border">
             <div className="flex flex-col gap-4">
-              {navLinks.map((link) => (
+              {navLinks.map((link, index) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors py-2"
+                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-all duration-200 py-2 hover:translate-x-2"
                   onClick={() => setIsMobileMenuOpen(false)}
+                  style={{ transitionDelay: `${index * 50}ms` }}
                 >
                   {link.label}
                 </a>
               ))}
-              <a href="#cta" className="btn-primary text-sm text-center mt-2">
+              <a 
+                href="#cta" 
+                className="btn-primary text-sm text-center mt-2 btn-press"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
                 Create your first day
               </a>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );

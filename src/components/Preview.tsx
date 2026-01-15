@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import NotchedCard from './NotchedCard';
+import ScrollReveal from './ScrollReveal';
 import { Check, Clock, RefreshCw, ArrowUpRight, ArrowDownLeft, Wallet, CreditCard } from 'lucide-react';
 
 type Tab = 'today' | 'habits' | 'finance';
@@ -16,51 +17,67 @@ const Preview: React.FC = () => {
   return (
     <section id="preview" className="py-20 sm:py-28">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-12">
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground">
-            See it in action
-          </h2>
-          <p className="mt-3 text-lg text-muted-foreground">
-            A calm interface for your chaotic days
-          </p>
-        </div>
+        <ScrollReveal>
+          <div className="text-center mb-12">
+            <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground">
+              See it in action
+            </h2>
+            <p className="mt-3 text-lg text-muted-foreground">
+              A calm interface for your chaotic days
+            </p>
+          </div>
+        </ScrollReveal>
 
         {/* Preview Window */}
-        <div className="preview-window max-w-4xl mx-auto">
-          {/* Title bar */}
-          <div className="preview-titlebar">
-            <div className="flex gap-2">
-              <span className="preview-dot bg-secondary/80" />
-              <span className="preview-dot bg-accent" />
-              <span className="preview-dot bg-primary/60" />
+        <ScrollReveal delay={150}>
+          <div className="preview-window max-w-4xl mx-auto hover-glow">
+            {/* Title bar */}
+            <div className="preview-titlebar">
+              <div className="flex gap-2">
+                <span className="preview-dot bg-secondary/80 hover:scale-110 transition-transform cursor-pointer" />
+                <span className="preview-dot bg-accent hover:scale-110 transition-transform cursor-pointer" />
+                <span className="preview-dot bg-primary/60 hover:scale-110 transition-transform cursor-pointer" />
+              </div>
+              <span className="ml-4 text-xs text-muted-foreground font-medium">Orbit — Preview</span>
             </div>
-            <span className="ml-4 text-xs text-muted-foreground font-medium">Orbit — Preview</span>
-          </div>
 
-          {/* Tabs */}
-          <div className="flex border-b border-border">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 px-4 py-3 text-sm font-medium transition-all duration-200 ${
-                  activeTab === tab.id
-                    ? 'text-primary border-b-2 border-primary bg-surface/50'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-surface/30'
-                }`}
+            {/* Tabs */}
+            <div className="flex border-b border-border">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 px-4 py-3 text-sm font-medium tab-transition btn-press relative ${
+                    activeTab === tab.id
+                      ? 'text-primary bg-surface/50'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-surface/30'
+                  }`}
+                >
+                  {tab.label}
+                  {/* Active indicator with animation */}
+                  <span 
+                    className={`absolute bottom-0 left-0 right-0 h-0.5 bg-primary transition-transform duration-300 origin-left ${
+                      activeTab === tab.id ? 'scale-x-100' : 'scale-x-0'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+
+            {/* Content with fade transition */}
+            <div className="p-6 sm:p-8 min-h-[400px] relative overflow-hidden">
+              <div 
+                key={activeTab}
+                className="animate-fade-in"
+                style={{ animationDuration: '0.3s' }}
               >
-                {tab.label}
-              </button>
-            ))}
+                {activeTab === 'today' && <TodayView />}
+                {activeTab === 'habits' && <HabitsView />}
+                {activeTab === 'finance' && <FinanceView />}
+              </div>
+            </div>
           </div>
-
-          {/* Content */}
-          <div className="p-6 sm:p-8 min-h-[400px]">
-            {activeTab === 'today' && <TodayView />}
-            {activeTab === 'habits' && <HabitsView />}
-            {activeTab === 'finance' && <FinanceView />}
-          </div>
-        </div>
+        </ScrollReveal>
 
         {/* CTA after preview */}
         <div className="text-center mt-12">
@@ -93,35 +110,41 @@ const TodayView: React.FC = () => {
 
       {/* Tasks */}
       <div className="space-y-3">
-        {tasks.map((task) => (
-          <NotchedCard key={task.id} className="p-4 transition-all duration-200 hover:shadow-soft">
-            <div className="flex items-center gap-4">
-              <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${
-                task.done 
-                  ? 'bg-primary border-primary' 
-                  : 'border-border hover:border-primary/50'
-              }`}>
-                {task.done && <Check size={12} className="text-primary-foreground" />}
-              </div>
-              <div className="flex-1">
-                <p className={`font-medium ${task.done ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
-                  {task.title}
-                </p>
-              </div>
-              {task.time && (
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <Clock size={14} />
-                  <span>{task.time}</span>
+        {tasks.map((task, index) => (
+          <div 
+            key={task.id} 
+            style={{ animationDelay: `${index * 50}ms` }}
+            className="animate-fade-in"
+          >
+            <NotchedCard className="p-4 interactive-card">
+              <div className="flex items-center gap-4">
+                <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-200 cursor-pointer hover:scale-110 ${
+                  task.done 
+                    ? 'bg-primary border-primary' 
+                    : 'border-border hover:border-primary hover:bg-primary/5'
+                }`}>
+                  {task.done && <Check size={12} className="text-primary-foreground" />}
                 </div>
-              )}
-            </div>
-          </NotchedCard>
+                <div className="flex-1">
+                  <p className={`font-medium transition-colors ${task.done ? 'text-muted-foreground line-through' : 'text-foreground'}`}>
+                    {task.title}
+                  </p>
+                </div>
+                {task.time && (
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <Clock size={14} />
+                    <span>{task.time}</span>
+                  </div>
+                )}
+              </div>
+            </NotchedCard>
+          </div>
         ))}
       </div>
 
       {/* Habit row */}
       <div className="pt-4 border-t border-border">
-        <div className="flex items-center justify-between p-3 bg-surface rounded-lg">
+        <div className="flex items-center justify-between p-3 bg-surface rounded-lg interactive-card">
           <div className="flex items-center gap-3">
             <RefreshCw size={16} className="text-primary" />
             <span className="text-sm font-medium text-foreground">Morning stretch</span>
@@ -154,22 +177,28 @@ const HabitsView: React.FC = () => {
       </div>
 
       <div className="space-y-3">
-        {habits.map((habit) => (
-          <NotchedCard key={habit.id} className="p-4 transition-all duration-200 hover:shadow-soft">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                <RefreshCw size={18} className="text-primary" />
+        {habits.map((habit, index) => (
+          <div 
+            key={habit.id} 
+            style={{ animationDelay: `${index * 50}ms` }}
+            className="animate-fade-in"
+          >
+            <NotchedCard className="p-4 interactive-card">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center transition-all duration-200 hover:bg-primary/20 hover:scale-105">
+                  <RefreshCw size={18} className="text-primary" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-medium text-foreground">{habit.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">{habit.repeat}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-foreground">{habit.streak} days</p>
+                  <p className="text-xs text-muted-foreground">streak</p>
+                </div>
               </div>
-              <div className="flex-1">
-                <p className="font-medium text-foreground">{habit.title}</p>
-                <p className="text-xs text-muted-foreground mt-0.5">{habit.repeat}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm font-semibold text-foreground">{habit.streak} days</p>
-                <p className="text-xs text-muted-foreground">streak</p>
-              </div>
-            </div>
-          </NotchedCard>
+            </NotchedCard>
+          </div>
         ))}
       </div>
 
@@ -198,23 +227,29 @@ const FinanceView: React.FC = () => {
       <div>
         <h3 className="font-display text-xl font-semibold text-foreground mb-4">Accounts</h3>
         <div className="grid gap-3 sm:grid-cols-2">
-          {accounts.map((account) => (
-            <NotchedCard key={account.id} className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-surface flex items-center justify-center">
-                  <account.icon size={18} className="text-primary" />
+          {accounts.map((account, index) => (
+            <div 
+              key={account.id} 
+              style={{ animationDelay: `${index * 50}ms` }}
+              className="animate-fade-in"
+            >
+              <NotchedCard className="p-4 interactive-card">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-surface flex items-center justify-center transition-all duration-200 hover:bg-primary/10 hover:scale-105">
+                    <account.icon size={18} className="text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">{account.name}</p>
+                    <p className={`font-display font-bold text-lg ${
+                      account.balance < 0 ? 'text-secondary' : 'text-foreground'
+                    }`}>
+                      ${Math.abs(account.balance).toFixed(2)}
+                      {account.balance < 0 && <span className="text-xs ml-1">owed</span>}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{account.name}</p>
-                  <p className={`font-display font-bold text-lg ${
-                    account.balance < 0 ? 'text-secondary' : 'text-foreground'
-                  }`}>
-                    ${Math.abs(account.balance).toFixed(2)}
-                    {account.balance < 0 && <span className="text-xs ml-1">owed</span>}
-                  </p>
-                </div>
-              </div>
-            </NotchedCard>
+              </NotchedCard>
+            </div>
           ))}
         </div>
       </div>
@@ -223,13 +258,14 @@ const FinanceView: React.FC = () => {
       <div>
         <h4 className="font-medium text-foreground mb-3">Recent Transactions</h4>
         <div className="space-y-2">
-          {transactions.map((tx) => (
+          {transactions.map((tx, index) => (
             <div 
               key={tx.id} 
-              className="flex items-center justify-between p-3 bg-surface rounded-lg"
+              style={{ animationDelay: `${(index + 2) * 50}ms` }}
+              className="flex items-center justify-between p-3 bg-surface rounded-lg interactive-card animate-fade-in"
             >
               <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 ${
                   tx.type === 'income' ? 'bg-primary/10' : 'bg-secondary/10'
                 }`}>
                   {tx.type === 'income' 

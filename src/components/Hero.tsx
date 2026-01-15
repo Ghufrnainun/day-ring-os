@@ -20,22 +20,22 @@ const Hero: React.FC = () => {
         
         {/* Bullets */}
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-6 animate-fade-up-delay-2">
-          <span className="chip">Today-first clarity</span>
-          <span className="chip">Habits without pressure</span>
-          <span className="chip-highlight">Finance you can trust</span>
+          <span className="chip transition-all duration-200 hover:border-primary/50 hover:-translate-y-0.5 cursor-default">Today-first clarity</span>
+          <span className="chip transition-all duration-200 hover:border-primary/50 hover:-translate-y-0.5 cursor-default">Habits without pressure</span>
+          <span className="chip-highlight transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 cursor-default">Finance you can trust</span>
         </div>
         
         {/* CTAs */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up-delay-3">
-          <a href="#cta" className="btn-primary text-base px-8 py-4">
+          <a href="#cta" className="btn-primary text-base px-8 py-4 btn-press hover-glow">
             Create your first day
           </a>
           <a 
             href="#preview" 
-            className="btn-secondary text-base px-6 py-4 flex items-center gap-2"
+            className="btn-secondary text-base px-6 py-4 flex items-center gap-2 btn-press group"
           >
             See the preview
-            <ArrowDown size={16} />
+            <ArrowDown size={16} className="transition-transform duration-200 group-hover:translate-y-1" />
           </a>
         </div>
         
