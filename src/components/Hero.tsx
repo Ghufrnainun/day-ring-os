@@ -1,11 +1,9 @@
 import React from 'react';
-import DayRing from './DayRing';
 import { ArrowDown } from 'lucide-react';
 
 const Hero: React.FC = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center pt-20 pb-16 overflow-hidden">
-      <DayRing />
+    <section className="relative min-h-screen flex items-center justify-center pt-20 pb-16">
       
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
         {/* Headline */}
