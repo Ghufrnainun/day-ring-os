@@ -32,11 +32,14 @@ const Modules: React.FC = () => {
   ];
 
   return (
-    <section className="py-20 sm:py-28 bg-gradient-to-b from-surface/30 via-surface/50 to-surface/20">
+    <section className="py-20 sm:py-28 bg-[hsl(162_20%_95%)]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center mb-12 sm:mb-16">
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground">
+            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium tracking-wide uppercase bg-accent/15 text-accent-foreground mb-4">
+              Features
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-foreground">
               Three modules, one focus
             </h2>
             <p className="mt-3 text-lg text-muted-foreground">

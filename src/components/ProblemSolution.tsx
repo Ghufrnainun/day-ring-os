@@ -4,8 +4,20 @@ import ScrollReveal from './ScrollReveal';
 
 const ProblemSolution: React.FC = () => {
   return (
-    <section id="product" className="py-20 sm:py-28 bg-gradient-to-b from-background via-surface/40 to-surface/20">
+    <section id="product" className="py-20 sm:py-28 bg-[hsl(33_25%_91%)]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        {/* Section Title */}
+        <ScrollReveal>
+          <div className="text-center mb-12 sm:mb-16">
+            <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium tracking-wide uppercase bg-secondary/10 text-secondary mb-4">
+              Why Orbit?
+            </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-foreground">
+              From chaos to clarity
+            </h2>
+          </div>
+        </ScrollReveal>
+        
         <div className="grid md:grid-cols-2 gap-8 sm:gap-12">
           {/* Problem */}
           <ScrollReveal direction="left">

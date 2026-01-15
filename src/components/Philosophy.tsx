@@ -10,12 +10,15 @@ const Philosophy: React.FC = () => {
   ];
 
   return (
-    <section className="py-20 sm:py-28 relative overflow-hidden bg-gradient-to-b from-surface/20 via-background to-surface/40">
+    <section className="py-20 sm:py-28 relative overflow-hidden bg-[hsl(33_30%_88%)]">
       
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center">
         <ScrollReveal>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-foreground mb-12">
-            Our Philosophy
+          <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium tracking-wide uppercase bg-foreground/10 text-foreground mb-4">
+            Our Principles
+          </span>
+          <h2 className="font-serif text-3xl sm:text-4xl font-semibold text-foreground mb-12">
+            Built on intention
           </h2>
         </ScrollReveal>
 

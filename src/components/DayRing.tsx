@@ -5,20 +5,19 @@ interface DayRingProps {
 }
 
 const DayRing: React.FC<DayRingProps> = ({ className = '' }) => {
-  // Ring configurations from outer to inner
+  // Ring configurations - more compact, focused on hero
   const rings = [
-    { r: 480, strokeWidth: 0.5, delay: 0 },
-    { r: 400, strokeWidth: 0.75, delay: 0.8 },
-    { r: 320, strokeWidth: 1, delay: 1.6 },
-    { r: 240, strokeWidth: 1.25, delay: 2.4 },
-    { r: 160, strokeWidth: 1.5, delay: 3.2 },
+    { r: 280, strokeWidth: 0.5, delay: 0 },
+    { r: 220, strokeWidth: 0.75, delay: 0.6 },
+    { r: 160, strokeWidth: 1, delay: 1.2 },
+    { r: 100, strokeWidth: 1.25, delay: 1.8 },
   ];
 
   return (
     <div className={`absolute inset-0 overflow-hidden pointer-events-none ${className}`}>
       <svg
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] max-w-none"
-        viewBox="0 0 1000 1000"
+        className="absolute top-[30%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] max-w-none"
+        viewBox="0 0 600 600"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -34,8 +33,8 @@ const DayRing: React.FC<DayRingProps> = ({ className = '' }) => {
         {rings.map((ring, index) => (
           <circle
             key={index}
-            cx="500"
-            cy="500"
+            cx="300"
+            cy="300"
             r={ring.r}
             stroke="hsl(var(--primary))"
             strokeWidth={ring.strokeWidth}
@@ -49,28 +48,20 @@ const DayRing: React.FC<DayRingProps> = ({ className = '' }) => {
 
         {/* Accent dots that pulse along with the rings */}
         <circle
-          cx="500"
+          cx="300"
           cy="20"
-          r="4"
+          r="3"
           fill="hsl(var(--accent))"
           className="orbit-dot"
           style={{ animationDelay: '0s' }}
         />
         <circle
-          cx="900"
-          cy="500"
-          r="3"
+          cx="560"
+          cy="300"
+          r="2.5"
           fill="hsl(var(--primary))"
           className="orbit-dot"
-          style={{ animationDelay: '1.6s' }}
-        />
-        <circle
-          cx="180"
-          cy="500"
-          r="3"
-          fill="hsl(var(--secondary))"
-          className="orbit-dot"
-          style={{ animationDelay: '3.2s' }}
+          style={{ animationDelay: '1.2s' }}
         />
       </svg>
     </div>
