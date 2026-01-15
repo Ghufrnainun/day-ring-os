@@ -48,7 +48,7 @@ const Modules: React.FC = () => {
               key={index}
               variant="simple"
               label={module.label}
-              className={`p-6 pt-8 transition-all duration-200 hover:shadow-soft ${
+              className={`p-6 pt-8 transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lift ${
                 module.highlight ? 'border-2 border-primary/30' : ''
               }`}
             >

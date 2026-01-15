@@ -113,7 +113,53 @@
     );
   }
 
-  /* Orbit Ring Animation */
+  /* Orbit Ring Animation - Sequential pulse from outer to inner */
+  @keyframes orbit-sequential-pulse {
+    0% { 
+      opacity: 0.04;
+      stroke-width: inherit;
+    }
+    15% { 
+      opacity: 0.18;
+      stroke-width: calc(inherit * 1.5);
+    }
+    30% { 
+      opacity: 0.08;
+    }
+    100% { 
+      opacity: 0.04;
+    }
+  }
+
+  .orbit-ring-sequential {
+    opacity: 0.04;
+    animation: orbit-sequential-pulse 5s ease-in-out infinite;
+  }
+
+  /* Dot pulse animation */
+  @keyframes orbit-dot-pulse {
+    0%, 100% { 
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    20% { 
+      opacity: 0.7;
+      transform: scale(1.2);
+    }
+    40% {
+      opacity: 0.4;
+      transform: scale(1);
+    }
+  }
+
+  .orbit-dot {
+    opacity: 0.3;
+    animation: orbit-dot-pulse 5s ease-in-out infinite;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+
+  /* Legacy orbit ring for compatibility */
   @keyframes orbit-pulse {
     0%, 100% { opacity: 0.06; }
     50% { opacity: 0.12; }
