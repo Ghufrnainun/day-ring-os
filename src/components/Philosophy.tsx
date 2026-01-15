@@ -23,9 +23,9 @@ const Philosophy: React.FC = () => {
           {principles.map((principle, index) => (
             <ScrollReveal key={index} delay={index * 100}>
               <p
-                className={`text-xl sm:text-2xl leading-relaxed transition-all duration-300 hover:scale-[1.02] cursor-default ${
+                className={`font-serif italic text-xl sm:text-2xl leading-relaxed transition-all duration-300 hover:scale-[1.02] cursor-default ${
                   principle.emphasis 
-                    ? 'font-display font-bold text-foreground' 
+                    ? 'font-semibold text-foreground' 
                     : 'text-muted-foreground'
                 }`}
               >

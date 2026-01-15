@@ -12,7 +12,7 @@ const FinalCTA: React.FC = () => {
       
       <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 text-center">
         <ScrollReveal>
-          <h2 className="font-display text-4xl sm:text-5xl font-bold text-foreground mb-6">
+          <h2 className="font-serif text-4xl sm:text-5xl font-semibold text-foreground mb-6">
             Start with one day.
           </h2>
         </ScrollReveal>
