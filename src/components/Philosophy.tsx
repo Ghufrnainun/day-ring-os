@@ -10,7 +10,7 @@ const Philosophy: React.FC = () => {
   ];
 
   return (
-    <section className="py-20 sm:py-28 relative overflow-hidden">
+    <section className="py-20 sm:py-28 relative overflow-hidden bg-gradient-to-b from-surface/20 via-background to-surface/40">
       
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 text-center">
         <ScrollReveal>

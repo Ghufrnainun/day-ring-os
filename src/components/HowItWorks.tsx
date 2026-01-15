@@ -26,7 +26,7 @@ const HowItWorks: React.FC = () => {
   ];
 
   return (
-    <section id="how-it-works" className="py-20 sm:py-28">
+    <section id="how-it-works" className="py-20 sm:py-28 bg-gradient-to-b from-surface/20 via-background to-surface/30">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center mb-12 sm:mb-16">

@@ -38,7 +38,7 @@ const Pricing: React.FC = () => {
   ];
 
   return (
-    <section className="py-20 sm:py-28 bg-surface/30">
+    <section className="py-20 sm:py-28 bg-gradient-to-b from-surface/40 via-surface/50 to-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center mb-12 sm:mb-16">

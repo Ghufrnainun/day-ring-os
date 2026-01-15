@@ -32,7 +32,7 @@ const Modules: React.FC = () => {
   ];
 
   return (
-    <section className="py-20 sm:py-28 bg-surface/30">
+    <section className="py-20 sm:py-28 bg-gradient-to-b from-surface/30 via-surface/50 to-surface/20">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <ScrollReveal>
           <div className="text-center mb-12 sm:mb-16">

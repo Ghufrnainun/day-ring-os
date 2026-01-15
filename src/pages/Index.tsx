@@ -32,7 +32,7 @@ const Index: React.FC = () => {
         </div>
         
         {/* Remaining sections with subtle background */}
-        <div className="relative bg-gradient-to-b from-muted/20 via-background to-muted/10">
+        <div className="relative">
           <ProblemSolution />
           <HowItWorks />
           <Modules />
