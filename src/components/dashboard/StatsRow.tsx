@@ -44,7 +44,7 @@ export function StatsRow() {
             <span className="text-lg font-bold tracking-tight">
               {stat.value}
             </span>
-            <span className="text-[10px] md:text-xs text-muted-foreground font-medium uppercase tracking-wide">
+            <span className="text-[10px] md:text-xs text-foreground/70 font-medium uppercase tracking-wide">
               {stat.label}
             </span>
           </div>

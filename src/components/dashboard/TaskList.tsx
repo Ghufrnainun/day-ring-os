@@ -8,6 +8,7 @@ import { useUser } from '@/hooks/use-user';
 import { format } from 'date-fns';
 import { CreateTaskSheet } from './tasks/CreateTaskSheet';
 import { toast } from 'sonner';
+import { getNextStatus, getUndoToastMessage } from '@/lib/taskStatus';
 
 interface TaskListProps {
   date?: string;
@@ -43,7 +44,7 @@ export function TaskList({ date }: TaskListProps) {
             description,
             scheduled_at
           )
-        `,
+        `
         )
         .eq('user_id', user.id)
         .eq('logical_day', targetDate)
@@ -70,7 +71,7 @@ export function TaskList({ date }: TaskListProps) {
       const previousTasks = queryClient.getQueryData(['tasks', targetDate]);
 
       queryClient.setQueryData(['tasks', targetDate], (old: any) =>
-        old?.map((t: any) => (t.id === id ? { ...t, status: nextStatus } : t)),
+        old?.map((t: any) => (t.id === id ? { ...t, status: nextStatus } : t))
       );
 
       return { previousTasks };
@@ -83,10 +84,7 @@ export function TaskList({ date }: TaskListProps) {
     onSuccess: (data, variables: ToggleTaskInput | undefined) => {
       if (!variables?.showUndo) return;
 
-      const message =
-        variables.nextStatus === 'done'
-          ? 'Task marked as done.'
-          : 'Task updated.';
+      const message = getUndoToastMessage(variables.nextStatus);
 
       toast(message, {
         description: 'You can undo this for a few seconds.',
@@ -135,8 +133,7 @@ export function TaskList({ date }: TaskListProps) {
       <div className="space-y-3">
         {sortedTasks?.map((instance: any) => {
           const previousStatus = instance.status as string;
-          const nextStatus =
-            previousStatus === 'done' ? 'pending' : 'done';
+          const nextStatus = getNextStatus(previousStatus);
 
           return (
             <TaskItem
@@ -144,10 +141,7 @@ export function TaskList({ date }: TaskListProps) {
               title={instance.tasks?.title || 'Untitled Task'}
               time={
                 instance.tasks?.scheduled_at
-                  ? format(
-                      new Date(instance.tasks.scheduled_at),
-                      'h:mm a',
-                    )
+                  ? format(new Date(instance.tasks.scheduled_at), 'h:mm a')
                   : undefined
               }
               completed={instance.status === 'done'}

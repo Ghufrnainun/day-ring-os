@@ -144,7 +144,7 @@ export function CreateTaskSheet({ children }: { children: React.ReactNode }) {
             <Input
               id="title"
               placeholder="What needs to be done?"
-              className="text-lg font-medium border-0 border-b border-white/20 rounded-none px-0 focus-visible:ring-0 focus-visible:border-white/40 placeholder:text-white/20 bg-transparent h-auto py-2 transition-colors"
+              className="text-lg font-medium border-0 border-b border-border rounded-none px-0 focus-visible:ring-0 focus-visible:border-primary/40 placeholder:text-muted-foreground/50 bg-transparent h-auto py-2 transition-colors text-foreground"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               autoFocus
@@ -162,7 +162,7 @@ export function CreateTaskSheet({ children }: { children: React.ReactNode }) {
                   <Button
                     variant={'outline'}
                     className={cn(
-                      'w-full justify-start text-left font-normal border-white/10 bg-white/5 hover:bg-white/10',
+                      'w-full justify-start text-left font-normal border-white/10 bg-white/10 hover:bg-white/10',
                       !date && 'text-muted-foreground'
                     )}
                   >
@@ -187,7 +187,7 @@ export function CreateTaskSheet({ children }: { children: React.ReactNode }) {
               </Label>
               <Button
                 variant={'outline'}
-                className="w-full justify-start text-left font-normal border-white/10 bg-white/5 hover:bg-white/10 text-muted-foreground"
+                className="w-full justify-start text-left font-normal border-white/10 bg-white/10 hover:bg-white/10 text-muted-foreground"
               >
                 <Clock className="mr-2 h-4 w-4" />
                 <span>All Day</span>
@@ -198,7 +198,7 @@ export function CreateTaskSheet({ children }: { children: React.ReactNode }) {
           {/* Recurring Toggle */}
           <div className="flex items-center justify-between py-4 border-y border-white/5">
             <div className="flex items-center space-x-3">
-              <div className="p-2 rounded-full bg-white/5 text-muted-foreground">
+              <div className="p-2 rounded-full bg-white/10 text-muted-foreground">
                 <Repeat size={16} />
               </div>
               <div className="space-y-0.5">
@@ -221,7 +221,7 @@ export function CreateTaskSheet({ children }: { children: React.ReactNode }) {
             </Label>
             <textarea
               id="description"
-              className="flex min-h-[120px] w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none hover:bg-white/10 transition-colors"
+              className="flex min-h-[120px] w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none hover:bg-white/10 transition-colors"
               placeholder="Add details, links, or sub-tasks..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -229,7 +229,7 @@ export function CreateTaskSheet({ children }: { children: React.ReactNode }) {
           </div>
         </div>
 
-        <SheetFooter className="px-6 py-6 border-t border-white/10 bg-white/5">
+        <SheetFooter className="px-6 py-6 border-t border-white/10 bg-white/10">
           <div className="flex w-full gap-3">
             <SheetClose asChild>
               <Button variant="ghost" className="flex-1">

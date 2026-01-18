@@ -43,8 +43,12 @@ export function TodayHero() {
   // Focus is the first pending task, or the last completed one if all are done?
   // PRD says "Active Task".
   const activeTask = tasks?.find((t: any) => t.status === 'pending');
+  // tasks is a related object - cast properly to access title
+  const taskData = activeTask?.tasks as unknown as
+    | { title: string }
+    | undefined;
   const focusText =
-    activeTask?.tasks?.title ||
+    taskData?.title ||
     (total > 0 && total === completed ? 'All Done!' : 'Deep Work');
 
   return (

@@ -30,7 +30,7 @@ export default function TermsPage() {
             </h2>
             <p className="mb-6">
               Permission is granted to temporarily download one copy of the
-              materials (information or software) on Orbit's website for
+              materials (information or software) on Orbit&apos;s website for
               personal, non-commercial transitory viewing only.
             </p>
 
@@ -38,12 +38,13 @@ export default function TermsPage() {
               3. Disclaimer
             </h2>
             <p className="mb-6">
-              The materials on Orbit's website are provided on an 'as is' basis.
-              Orbit makes no warranties, expressed or implied, and hereby
-              disclaims and negates all other warranties including, without
-              limitation, implied warranties or conditions of merchantability,
-              fitness for a particular purpose, or non-infringement of
-              intellectual property or other violation of rights.
+              The materials on Orbit&apos;s website are provided on an &apos;as
+              is&apos; basis. Orbit makes no warranties, expressed or implied,
+              and hereby disclaims and negates all other warranties including,
+              without limitation, implied warranties or conditions of
+              merchantability, fitness for a particular purpose, or
+              non-infringement of intellectual property or other violation of
+              rights.
             </p>
 
             <h2 className="text-2xl font-medium text-foreground mt-12 mb-4">
@@ -53,7 +54,7 @@ export default function TermsPage() {
               In no event shall Orbit or its suppliers be liable for any damages
               (including, without limitation, damages for loss of data or
               profit, or due to business interruption) arising out of the use or
-              inability to use the materials on Orbit's website.
+              inability to use the materials on Orbit&apos;s website.
             </p>
           </div>
         </div>

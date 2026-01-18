@@ -13,6 +13,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 type Tab = 'today' | 'habits' | 'finance';
 
@@ -119,13 +120,21 @@ export function InteractivePreview() {
         <p className="text-xl font-display text-muted italic">
           &quot;One screen for what matters today.&quot;
         </p>
-        <a
-          href="#features"
-          className="mt-4 text-primary font-bold hover:tracking-widest transition-all inline-flex items-center group bg-white/50 px-6 py-2 rounded-full border border-white/40 shadow-sm"
-        >
-          EXPLORE FEATURES
-          <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-        </a>
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link
+            href="/register"
+            className="btn-primary px-6 py-2.5 rounded-full btn-press hover-glow text-sm font-medium"
+          >
+            Create your first day
+          </Link>
+          <a
+            href="#features"
+            className="text-primary font-semibold hover:tracking-widest transition-all inline-flex items-center group bg-white/50 px-6 py-2 rounded-full border border-white/40 shadow-sm text-sm"
+          >
+            Explore features
+            <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </a>
+        </div>
       </div>
     </motion.div>
   );

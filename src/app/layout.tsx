@@ -5,6 +5,8 @@ import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Providers } from '@/components/providers';
+import { ThemeProvider } from '@/components/theme-provider';
+import { TimeProvider } from '@/components/providers/time-provider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,21 +27,65 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: 'Orbit — Your Day, Under Control | Life & Finance OS',
+  title: {
+    default: 'Orbit — Your Day, Under Control | Life & Finance OS',
+    template: '%s | Orbit',
+  },
   description:
     'Tasks, habits, and money — in one calm system. A planner-centric Life & Finance OS that puts today first. No gamification, no guilt.',
+  keywords: [
+    'productivity app',
+    'task manager',
+    'habit tracker',
+    'finance tracker',
+    'personal finance',
+    'daily planner',
+    'no gamification',
+    'calm productivity',
+  ],
   authors: [{ name: 'Orbit' }],
+  creator: 'Orbit Team',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   openGraph: {
     title: 'Orbit — Your Day, Under Control',
     description:
       'Tasks, habits, and money — in one calm system. A planner-centric Life & Finance OS that puts today first.',
     type: 'website',
-    images: ['https://lovable.dev/opengraph-image-p98pqg.png'],
+    url: 'https://orbit.app',
+    siteName: 'Orbit',
+    locale: 'en_US',
+    images: [
+      {
+        url: 'https://orbit.app/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Orbit - Life & Finance OS',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
+    title: 'Orbit — Your Day, Under Control',
+    description: 'Tasks, habits, and money — in one calm system.',
     site: '@OrbitApp',
-    images: ['https://lovable.dev/opengraph-image-p98pqg.png'],
+    creator: '@OrbitApp',
+    images: ['https://orbit.app/og-image.png'],
+  },
+  manifest: '/manifest.json',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon-16x16.png',
+    apple: '/apple-touch-icon.png',
   },
 };
 
@@ -56,14 +102,24 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} ${cormorant.variable}`}
+      suppressHydrationWarning
     >
       <body className="antialiased">
         <Providers>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            {children}
-          </TooltipProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <TimeProvider>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                {children}
+              </TooltipProvider>
+            </TimeProvider>
+          </ThemeProvider>
         </Providers>
       </body>
     </html>

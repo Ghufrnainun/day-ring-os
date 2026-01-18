@@ -25,7 +25,7 @@ export function TopNav() {
   }, [today]);
 
   return (
-    <header className="flex items-center justify-between pb-6 pt-2 animate-fade-up">
+    <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between pb-6 pt-2 animate-fade-up">
       <div className="flex flex-col">
         <span className="font-serif italic text-primary text-lg tracking-wide">
           {dateStr}
@@ -37,7 +37,7 @@ export function TopNav() {
 
       <div className="flex items-center gap-2">
         {/* Placeholder for settings or profile menu */}
-        <Link href="/settings">
+        <Link href="/profile">
           <Button variant="ghost" size="icon" className="rounded-full">
             <Settings className="w-5 h-5 text-muted-foreground" />
           </Button>

@@ -27,6 +27,25 @@ You are a **senior full-stack engineer** working autonomously on Orbit.
 | Backend Engineer | Database integrity, API correctness, `logical_day` consistency       |
 | DevOps Mindset   | Build stability, monitoring awareness, cron reliability              |
 
+### Skill Awareness (Per Run)
+
+At the start of every run, identify the active role(s) for the task and load the matching skills. Read only the relevant `SKILL.md` or workflow doc before planning.
+
+| Role             | Skills to check (when relevant)                                      |
+| ---------------- | -------------------------------------------------------------------- |
+| Product Engineer | `vercel-react-best-practices`                                        |
+| QA Engineer      | `web-design-guidelines`                                              |
+| UX Guardian      | `ui-ux-pro-max` workflow + `web-design-guidelines` for review        |
+| Backend Engineer | None by default; check for backend skills in `.agent/skills/`        |
+| DevOps Mindset   | None by default; check for infra skills in `.agent/skills/`          |
+
+Notes:
+- Skill docs live in `.codex/skills/<skill>/SKILL.md` and `.agent/skills/<skill>/SKILL.md`.
+- Workflows live in `.agent/workflows/*.md`.
+- If multiple roles apply, load the union of their skills.
+- If the user explicitly requests a skill, load it even if the role differs.
+- If no skill applies, proceed without loading any skill docs.
+
 ---
 
 ## 2. Non-Negotiables (Product Guardrails)
@@ -70,6 +89,10 @@ These are **absolute constraints** - violation is considered a critical bug.
 When starting work, follow this loop:
 
 ```
+0. Load agent skills (per role)
+   -> Identify active role(s) for this task
+   -> Read matching SKILL.md/workflow docs before planning
+
 1. Read PRD (docs/PRD.md)
    -> Understand product philosophy, current phase, feature scope
 

@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useUser } from '@/hooks/use-user';
 import { Repeat, Trash2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { CreateTaskSheet } from '@/components/dashboard/tasks/CreateTaskSheet';
+import { AddHabitSheet } from '@/components/dashboard/tasks/AddHabitSheet';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -144,11 +144,11 @@ export default function HabitsPage() {
       </div>
 
       {/* Floating Action Button for Mobile or specific Add button */}
-      <CreateTaskSheet>
+      <AddHabitSheet>
         <Button className="w-full h-12 rounded-full text-base font-medium shadow-lg bg-primary text-primary-foreground hover:opacity-90 transition-all flex items-center gap-2 justify-center">
           <Plus size={18} /> New Habit
         </Button>
-      </CreateTaskSheet>
+      </AddHabitSheet>
     </div>
   );
 }

@@ -53,6 +53,9 @@ Rules:
 - `logical_day` is calculated from user timezone, not raw UTC timestamp
 - Tasks, habit confirmations, reminders, and transactions all resolve to a logical day
 - Streaks, daily snapshots, and analytics rely on logical_day consistency
+- Timezone is stored on profile and treated as the source of truth (frozen until user confirms a change)
+- If device timezone differs, prompt for confirmation before updating profile timezone
+- Timezone changes apply forward-only; historical logical_day values are not recomputed
 
 This prevents edge cases across timezones (late-night confirmations, travel, DST).
 
@@ -81,7 +84,7 @@ This section describes **how a real user moves through the app**, end-to-end, on
    - Daily Planner (default)
    - Habits & Reminders (optional)
    - Budgeting & Finance (optional)
-3. Sets timezone (used for logical_day)
+3. Sets timezone (used for logical_day, frozen until user confirms changes)
 4. Lands directly on **Today Screen** (no dashboard detour)
 
 ---
@@ -253,10 +256,17 @@ Levels & achievements are derived from long-term habit consistency.
 - Budget-style planner: track money in/out per logical day
 - Multiple money accounts (bank/savings, cash, e-wallet, investment)
 - Accounts store opening balance and current balance (auto-updated)
+- Each account has a `currency_code` (multi-currency); totals are grouped by currency with no auto-conversion
+- Accounts support optional icons for quick recognition
+- Transaction categories are user-defined (with seeded defaults for income/expense)
 - Transactions as flows:
   - Income: choose destination account, balance increases
   - Expense: choose source account, balance decreases
   - Transfer/Investment: choose from + to accounts, balances update
+- Phase 1 supports income and expense only; transfer and investment are Phase 2
+- Phase 2 adds recurring transactions with flexible schedules (custom intervals), reminders/drafts, and optional end date or occurrence limit
+- Optional receipt attachment on transactions (upload only; OCR deferred to P3+)
+- Negative balances are allowed with a soft warning (no hard block)
 
 ## 5.5 Notes & Context System (Supporting Feature)
 
@@ -478,6 +488,59 @@ Rationale:
 
 ---
 
+### 6.5.2 Today Screen Layout Spec (NEW)
+
+**Goal:** hit the 30-second rule with a calm, low-friction layout.
+
+**Desktop layout (recommended):** two-column
+
+- **Left (primary):** date header + quick add + task/habit list
+- **Right (secondary):** summary card + habit ring + finance quick log
+
+**Mobile layout (recommended):** single column
+
+- Header/date
+- Summary card
+- Quick add entry
+- Task/habit list
+- Habit ring
+- Finance quick log
+
+**Quick add placement (best practice):**
+
+- Desktop: global `+ Add` in header (right side) + inline "Add task" row at top of list (opens sheet)
+- Mobile: sticky bottom pill button for `+ Add` (respect safe area, avoid overlapping other fixed elements)
+
+**List style:**
+
+- Today uses **simple list rows** for speed
+- Task detail screens can use **cards per item** (similar to Notes)
+
+**Accent usage (subtle):**
+
+- Tasks: neutral ink/stone
+- Habits: muted green/olive badge or dot
+- Finance: terracotta/brown accent for totals or labels
+
+**Stability & motion:**
+
+- Reserve space for async content to avoid layout shifts
+- Minimal motion, no bounce easing
+
+---
+
+### 6.5.3 Card Inventory & States (NEW)
+
+- **Summary card:** tasks done, habits done, money in/out (no gamified totals outside habits)
+- **Task row:** title, optional time, status control, optional note link
+- **Habit row:** task row + repeat indicator + gentle confirmation feedback (no XP bars)
+- **Habit ring card:** subtle day ring showing **habit confirmations only**
+- **Finance quick log card:** income/expense selector, amount, account, save
+- **Empty state card:** supportive copy + optional action
+- **Loading state:** skeletons with fixed heights to prevent jumping
+
+---
+
 ### 6.6 Task vs Habit Visual Distinction
 
 - Tasks and Habits share the same data schema
@@ -510,6 +573,7 @@ Rules:
 - Quick logging (expense / income):
   - Allowed from Today Screen
   - Allowed for past days
+- Add Transaction supports optional linking to Task and/or Note; Quick Finance stays minimal (no linking)
 
 Rationale:
 
@@ -770,17 +834,14 @@ Principles:
 Guidelines:
 
 - Reminder delivery failures:
-
   - Silent by default
   - Surface only if repeatedly failing
 
 - Finance errors:
-
-  - Insufficient balance -> soft warning (configurable)
+  - Insufficient balance -> soft warning (no hard block)
   - No destructive actions without confirmation
 
 - System delays (cron, sync):
-
   - Graceful fallback
   - Never block Today Screen
 
@@ -1028,16 +1089,110 @@ That feature is **out of scope** and must be redesigned or removed.
 
 ---
 
+### 6.22 Design System Implementation (CURRENT)
+
+This section defines the **actual CSS tokens and patterns** implemented in the codebase.
+
+#### Core Color Palette (CSS Variables)
+
+| Token           | HSL Value   | Hex        | Usage                     |
+| --------------- | ----------- | ---------- | ------------------------- |
+| `--primary`     | 162 33% 27% | #2F5D50    | Forest Green - main brand |
+| `--secondary`   | 16 50% 53%  | #C36A4A    | Terracotta - accents      |
+| `--accent`      | 43 72% 50%  | Muted Gold | Highlights                |
+| `--background`  | 33 33% 95%  | #F7F3EE    | Cream Organik             |
+| `--card`        | 33 28% 92%  | -          | Card backgrounds          |
+| `--foreground`  | 0 0% 9%     | #171717    | Text                      |
+| `--destructive` | 0 62% 50%   | -          | Errors                    |
+
+#### Component Styling Patterns
+
+**Cards:**
+
+- Border radius: `rounded-2xl` (16px) or `rounded-3xl` (24px) for hero cards
+- Background: `bg-card/60` with `border border-border/30`
+- Shadow: `shadow-sm` - never heavy shadows
+- Hover: `hover:bg-card` or subtle scale `hover:scale-[1.01]`
+
+**Buttons:**
+
+- Primary: `bg-primary hover:bg-primary/90 rounded-xl` or `rounded-full`
+- Dashed outline: `border border-dashed border-primary/30 bg-primary/5`
+- Destructive: `border border-destructive/20 text-destructive`
+
+**Dialogs/Modals:**
+
+- Container: `rounded-2xl border border-white/20 bg-background/95 backdrop-blur-xl`
+- Max width: `sm:max-w-[340px]` for compact forms
+- Footer: `border-t border-white/10 bg-white/5`
+- Submit button: `rounded-full h-11 w-full`
+
+**Form Elements:**
+
+- Labels: `text-[10px] uppercase tracking-wider text-muted-foreground font-semibold`
+- Inputs: `bg-white/10 border-white/10 h-10 rounded-lg`
+- Toggle buttons: `flex p-1 bg-muted/30 rounded-lg border border-white/10`
+
+**Sidebar:**
+
+- Background: `bg-gradient-to-b from-stone-50 to-stone-100/50`
+- Profile card: `rounded-2xl bg-white/80 border border-stone-200/50`
+- Nav items: `rounded-xl hover:bg-primary/5`
+
+**Profile/Hero Cards:**
+
+- Container: `rounded-3xl bg-gradient-to-br from-primary/10 via-card to-card`
+- Avatar: `rounded-full bg-gradient-to-br from-primary to-emerald-600`
+- Level badge: Absolute positioned `rounded-full bg-secondary`
+- Stat icons: `rounded-lg bg-{color}-100 text-{color}-600`
+
+#### Typography Patterns
+
+- Display: `font-display font-bold tracking-tight`
+- Section headers: `text-xs font-semibold text-muted-foreground uppercase tracking-wider`
+- Monospace (finance): `font-mono font-medium`
+
+#### Navigation Structure (Updated)
+
+- **Today** (primary, default landing)
+- **Calendar** (collapsible: Daily, Weekly, Monthly)
+- **Boards** (kanban workspace)
+- **Notes** (context & planning)
+- **Finance** (money management)
+- **Habits** (habit tracking)
+- **Profile** (user settings, gamification stats, reminders)
+
+#### Micro-interactions & Animations
+
+| Class                    | Effect                      | Usage                    |
+| ------------------------ | --------------------------- | ------------------------ |
+| `hover-lift`             | Lift + shadow on hover      | Cards, clickable items   |
+| `hover-scale`            | Scale to 1.02 on hover      | Buttons, icons           |
+| `click-scale`            | Scale to 0.98 on click      | All interactive elements |
+| `hover-glow`             | Primary color glow on hover | Important CTAs           |
+| `interactive-card`       | Lift + border highlight     | Dashboard cards          |
+| `btn-press`              | Press down effect           | Buttons                  |
+| `animate-fade-up`        | Fade in from bottom         | Page entrance            |
+| `animate-checkmark`      | Draw checkmark SVG          | Task completion          |
+| `animate-success-pulse`  | Green pulse ring            | Success feedback         |
+| `animate-shake`          | Horizontal shake            | Error feedback           |
+| `animate-slide-in-right` | Slide from right            | List items               |
+| `animate-pop-in`         | Scale pop entrance          | Badges, notifications    |
+| `animate-float`          | Gentle up/down float        | Hero elements            |
+| `shadow-glow`            | Soft primary glow           | Highlighted elements     |
+
+---
+
 ## 7. Pricing-Ready Feature Gating
 
 | Feature             | Free  | Pro (Full)               |
 | ------------------- | ----- | ------------------------ |
-| Tasks / Planner     | Yes    | Yes                       |
-| Reminders           | No    | Yes                       |
-| Habits (repeat)     | No    | Yes                       |
+| Tasks / Planner     | Yes   | Yes                      |
+| Reminders           | No    | Yes                      |
+| Habits (repeat)     | No    | Yes                      |
 | Multi Accounts      | 1     | Unlimited                |
 | Gamification        | Basic | Full                     |
-| Reviews & Insights  | No    | Yes                       |
+| Reviews & Insights  | No    | Yes                      |
 | AI-Powered Insights | No    | Optional Add-on (Future) |
 
 **Gamification definition:**
@@ -1176,7 +1331,7 @@ Recommended:
 
 ### 8.8 Consistency rules (anti-bug)
 
-- All day calculations use `users_profile.timezone` -> derive `logical_day` consistently.
+- All day calculations use `users_profile.timezone` -> derive `logical_day` consistently (frozen until user confirms change; changes apply forward-only).
 - Instances are the planning surface; tasks are templates.
 - Points are derived from habit completion in `task_instances` (done confirmations), not arbitrary counters.
 - Delayed tasks must preserve `original_logical_day` and `delayed_to_day`.
@@ -1203,7 +1358,7 @@ Conventions (LOCKED):
 
 - Inputs validated (zod or equivalent)
 - Consistent error shape
-- Idempotency for finance writes where possible
+- Idempotency required for all write endpoints (including finance)
 
 ---
 
@@ -1243,7 +1398,6 @@ See **Final Database Schema** section for specific SQL implementation.
 All joins must be **safe by construction**:
 
 - `task_instances.task_id -> tasks.id` is safe because:
-
   - both tables enforce `user_id = auth.uid()`
 
 - `transactions.task_instance_id -> task_instances.id` is safe only if:
@@ -1413,11 +1567,13 @@ updated_at
 
 ```sql
 id (uuid, pk)
-user_id (uuid, fk)
-name
-type ENUM('bank','cash','ewallet','investment')
-opening_balance NUMERIC
-current_balance NUMERIC
+  user_id (uuid, fk)
+  name
+  type ENUM('bank','cash','ewallet','investment')
+  currency_code TEXT          -- e.g., 'IDR'
+  icon TEXT                   -- optional (Lucide name)
+  opening_balance NUMERIC
+  current_balance NUMERIC
 is_active BOOLEAN            -- added
 created_at
 deleted_at                   -- added (soft delete)
@@ -1427,7 +1583,21 @@ deleted_at                   -- added (soft delete)
 
 ---
 
-## 9. transactions
+## 9. transaction_categories
+
+```sql
+id (uuid, pk)
+user_id (uuid, fk)
+name
+type ENUM('income','expense')
+icon TEXT
+created_at
+deleted_at
+```
+
+---
+
+## 10. transactions
 
 ```sql
 id (uuid, pk)
@@ -1437,8 +1607,9 @@ to_account_id (uuid, nullable)
 amount NUMERIC
 type ENUM('income','expense','transfer','investment')
 logical_day DATE
+currency_code TEXT
 description                  -- renamed from 'note' to avoid collision
-category                     -- added for Phase 2
+category                     -- user-defined category label
 task_instance_id (uuid, nullable)
 note_id (uuid, nullable)     -- FK to notes table
 created_at
@@ -1552,7 +1723,7 @@ CREATE TABLE gamification_stats (
 
 Current schema has both `note` (text) and `note_id` (FK), which is confusing.
 
-**Fix:** Rename `note` -> `description`, add `logical_day`, and enforce account shape by `type`
+**Fix:** Rename `note` -> `description`, add `logical_day` + `currency_code`, and enforce account shape by `type`
 
 ```sql
 CREATE TABLE transactions (
@@ -1560,17 +1731,18 @@ CREATE TABLE transactions (
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   from_account_id UUID REFERENCES money_accounts(id),
   to_account_id UUID REFERENCES money_accounts(id),
-  amount NUMERIC NOT NULL CHECK (amount > 0),
-  type TEXT NOT NULL CHECK (type IN ('income', 'expense', 'transfer', 'investment')),
-  logical_day DATE NOT NULL,
-  CHECK (
+    amount NUMERIC NOT NULL CHECK (amount > 0),
+    type TEXT NOT NULL CHECK (type IN ('income', 'expense', 'transfer', 'investment')),
+    logical_day DATE NOT NULL,
+    currency_code TEXT NOT NULL,
+    CHECK (
     (type = 'expense' AND from_account_id IS NOT NULL AND to_account_id IS NULL) OR
     (type = 'income' AND to_account_id IS NOT NULL AND from_account_id IS NULL) OR
     (type = 'transfer' AND from_account_id IS NOT NULL AND to_account_id IS NOT NULL AND from_account_id <> to_account_id) OR
     (type = 'investment' AND from_account_id IS NOT NULL AND to_account_id IS NOT NULL AND from_account_id <> to_account_id)
   ),
   description TEXT,                    -- renamed from 'note'
-  category TEXT,                       -- added for Phase 2 readiness
+  category TEXT,                       -- user-defined category label
   task_instance_id UUID REFERENCES task_instances(id),
   note_id UUID REFERENCES notes(id),   -- FK to notes table
   created_at TIMESTAMPTZ DEFAULT now()
@@ -1812,10 +1984,12 @@ CREATE TABLE gamification_stats (
 ```sql
 CREATE TABLE money_accounts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  type TEXT NOT NULL CHECK (type IN ('bank', 'cash', 'ewallet', 'investment')),
-  opening_balance NUMERIC DEFAULT 0,
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL CHECK (type IN ('bank', 'cash', 'ewallet', 'investment')),
+    currency_code TEXT NOT NULL DEFAULT 'USD',
+    icon TEXT,
+    opening_balance NUMERIC DEFAULT 0,
   current_balance NUMERIC DEFAULT 0,
   is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ DEFAULT now(),
@@ -1823,7 +1997,21 @@ CREATE TABLE money_accounts (
 );
 ```
 
-#### 9. transactions
+#### 9. transaction_categories
+
+```sql
+CREATE TABLE transaction_categories (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL,
+  type TEXT NOT NULL CHECK (type IN ('income', 'expense')),
+  icon TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  deleted_at TIMESTAMPTZ DEFAULT NULL
+);
+```
+
+#### 10. transactions
 
 ```sql
 CREATE TABLE transactions (
@@ -1831,10 +2019,11 @@ CREATE TABLE transactions (
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   from_account_id UUID REFERENCES money_accounts(id),
   to_account_id UUID REFERENCES money_accounts(id),
-  amount NUMERIC NOT NULL CHECK (amount > 0),
-  type TEXT NOT NULL CHECK (type IN ('income', 'expense', 'transfer', 'investment')),
-  logical_day DATE NOT NULL,
-  CHECK (
+    amount NUMERIC NOT NULL CHECK (amount > 0),
+    type TEXT NOT NULL CHECK (type IN ('income', 'expense', 'transfer', 'investment')),
+    logical_day DATE NOT NULL,
+    currency_code TEXT NOT NULL,
+    CHECK (
     (type = 'expense' AND from_account_id IS NOT NULL AND to_account_id IS NULL) OR
     (type = 'income' AND to_account_id IS NOT NULL AND from_account_id IS NULL) OR
     (type = 'transfer' AND from_account_id IS NOT NULL AND to_account_id IS NOT NULL AND from_account_id <> to_account_id) OR
@@ -1848,7 +2037,7 @@ CREATE TABLE transactions (
 );
 ```
 
-#### 10. daily_snapshots
+#### 11. daily_snapshots
 
 ```sql
 CREATE TABLE daily_snapshots (
@@ -1984,7 +2173,7 @@ CREATE TABLE reminder_deliveries (
   - Positioned as _gentle nudges_, not alarms
 - Finance:
   - Manual account setup
-  - Manual transaction input
+  - Manual transaction input (income/expense only)
   - No analytics yet
 - Gamification:
   - Points + daily streak only
@@ -2023,7 +2212,7 @@ CREATE TABLE reminder_deliveries (
 - Habit fatigue control:
   - Soft recommendation to limit active habits
 - Finance improvements:
-  - Recurring transactions
+  - Recurring transactions (flexible schedules, reminder-first)
   - Smart defaults (last used account/category)
 
 **What to Explicitly Avoid:**
@@ -2153,7 +2342,7 @@ Stability rules:
 
 - **Auth:** Supabase Auth (JWT)
 - **Authorization:** RLS on every table; server routes must re-check `user_id`
-- **Idempotency:** write endpoints accept optional `idempotency_key` (client-generated UUID) for retry safety
+- **Idempotency:** write endpoints require `idempotency_key` (client-generated UUID) for retry safety
 - **Pagination:** cursor-based for large lists (`limit`, `cursor`)
 - **Filtering & Sorting:** list endpoints accept `q`, `status`, `from`, `to`, `sort` (Phase 2+)
 - **Time:** server resolves `logical_day` consistently from user timezone
@@ -2187,8 +2376,9 @@ Common codes: `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND`, `VALIDATION_ERROR`, `CON
 
 ### 10.2 Data Access Strategy
 
-- **Direct Supabase (client):** tasks, notes, basic transactions CRUD
+- **Direct Supabase (client):** tasks, notes, transactions read (no client writes)
 - **Server API routes:**
+  - Transaction creation (atomic balance updates, idempotent)
   - End-of-day resolution
   - Reminder scheduling & dispatch
   - Snapshot generation
@@ -2200,9 +2390,9 @@ Common codes: `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND`, `VALIDATION_ERROR`, `CON
 - Apply lightweight rate limits to write endpoints (e.g., 60 req/min/user)
 - Stronger limits on system endpoints (`/api/system/*`)
 
-### 10.2.2 Idempotency Storage (Phase 2+)
+### 10.2.2 Idempotency Storage (Phase 1)
 
-For reliable retries across networks, introduce a small store:
+For reliable retries across networks, use a small store:
 
 - `idempotency_keys` table with `{user_id, key, endpoint, response_hash, created_at}`
 - Server routes return the stored result on duplicate requests
@@ -2374,6 +2564,8 @@ Create money account.
   "name": "BCA",
   "type": "bank",
   "opening_balance": 1500000,
+  "currency_code": "IDR",
+  "icon": "landmark",
   "idempotency_key": "uuid"
 }
 ```
@@ -2381,6 +2573,23 @@ Create money account.
 #### GET /api/v1/accounts
 
 List accounts and balances.
+
+#### GET /api/v1/categories|type=expense
+
+List transaction categories (scoped by type).
+
+#### POST /api/v1/categories
+
+Create transaction category.
+
+```json
+{
+  "name": "Food & Dining",
+  "type": "expense",
+  "icon": "utensils",
+  "idempotency_key": "uuid"
+}
+```
 
 #### POST /api/v1/transactions
 
@@ -2392,6 +2601,7 @@ Create transaction and update balances atomically.
   "from_account_id": "uuid",
   "to_account_id": null,
   "amount": 250000,
+  "category": "Food & Dining",
   "description": "Pay rent",
   "task_instance_id": "uuid|null",
   "note_id": "uuid|null",
@@ -2402,7 +2612,10 @@ Create transaction and update balances atomically.
 Rules:
 
 - Updates `current_balance` on affected accounts
-- Validates funds if `from_account_id` exists (configurable: strict vs soft)
+- `currency_code` is resolved from the account and stored on the transaction
+- UI totals and summaries are grouped by currency; no conversion in Phase 1
+- Phase 1: allow negative balances with a soft warning (no hard block)
+- Phase 1: `type` supports `income` and `expense` only; `transfer` and `investment` are Phase 2
 
 #### GET /api/v1/transactions|from=YYYY-MM-DD&to=YYYY-MM-DD&type=expense&account_id=...&limit=50&cursor=...
 
@@ -2468,13 +2681,13 @@ This section captures **important implementation notes** so the product remains 
 
 - Create/update/read tasks (simple CRUD)
 - Create/update/read notes (simple CRUD)
-- Create/read transactions (basic CRUD) _only if balance updates are handled safely_
+- Read transactions (list/detail)
 
 **Server Routes (/api/v1, privileged workflows):**
 
 - End-of-day resolution (auto-skip, delay move, snapshots)
 - Reminder scheduling & sending
-- Atomic balance updates (recommended to be server-side)
+- Create transactions (atomic balance updates, idempotent)
 - Exports (CSV/PDF), reconciliation actions
 - Future AI summaries / insights
 
@@ -2486,7 +2699,7 @@ This section captures **important implementation notes** so the product remains 
 
 Apply RLS to every user-scoped table:
 
-- `profiles`, `tasks`, `task_instances`, `repeat_rules`, `reminders`, `notes`, `notes_task_links`, `money_accounts`, `transactions`, `daily_snapshots`, `gamification_stats`, `point_logs`, `reminder_deliveries`, `audit_logs`, `idempotency_keys`
+- `profiles`, `tasks`, `task_instances`, `repeat_rules`, `reminders`, `notes`, `notes_task_links`, `money_accounts`, `transaction_categories`, `transactions`, `daily_snapshots`, `gamification_stats`, `point_logs`, `reminder_deliveries`, `audit_logs`, `idempotency_keys`
 
 Minimum policy pattern:
 
@@ -2500,7 +2713,7 @@ Server routes must still verify the authenticated user and never accept `user_id
 
 **End-of-day job**
 
-- Runs once per user timezone _or_ runs hourly and resolves affected logical days.
+- Runs once per user timezone and resolves the logical day.
 - Generates `daily_snapshots` deterministically.
 
 **Reminder job**
@@ -2536,7 +2749,8 @@ Recommended approach:
 
 - Treat `transactions` as the source of truth.
 - `money_accounts.current_balance` is a cache for fast UI.
-- Update balances **atomically** when creating transactions (server route recommended).
+- Update balances **atomically** when creating transactions (server route required in Phase 1).
+- Balance audit (P3+): recalculate per account, show delta, and resolve via an **adjustment transaction** (server-only, idempotent, logged in `audit_logs`).
 
 Reconciliation:
 
@@ -2581,13 +2795,89 @@ Edits:
 
 ---
 
-### J) Open Questions (Parked for Discussion)
+Reconciliation:
 
-- Strict vs soft negative balance validation
-- Whether to store `point_logs` in Phase 2 or Phase 3
-- Whether to make `transactions` creation client-direct or server-only
-- Timezone travel behavior (freeze timezone vs dynamic)
+- Phase 3+: introduce reconcile action and audit it.
+
+Edits:
+
+- Prefer immutable transactions (edit creates adjustment) in Phase 3+.
 
 ---
 
-Next Step: UI wireframe -> implementation plan -> repository scaffolding
+### F) Deletion & History Integrity
+
+- Prefer **soft delete** for tasks/habits/notes to preserve analytics.
+- Never delete finance transactions in Pro phase; use adjustments.
+
+---
+
+### G) Observability & Audit
+
+- Include `request_id` in every response.
+- Log minimal metadata (endpoint, duration, success/failure).
+- Audit sensitive actions:
+  - transaction edits/reconciliations
+  - exports
+  - reminder settings changes
+
+---
+
+### H) API Evolution
+
+- Keep all new fields additive.
+- Use `/api/v1` path versioning.
+- Document deprecated endpoints before removal.
+
+---
+
+### I) Data Import/Export (Phase 3+)
+
+- Export: tasks/habits summaries + finance CSV.
+- Import: optional CSV import for transactions (later).
+
+---
+
+### J) Open Questions (Remaining)
+
+- Whether to store `point_logs` in Phase 2 or Phase 3
+
+---
+
+### K) Deployment Checklist
+
+> [!CAUTION] > **BELUM SELESAI:** Pastikan setup berikut sudah dilakukan sebelum production!
+
+#### Environment Variables (Required)
+
+```env
+CRON_SECRET=your-secure-random-string
+RESEND_API_KEY=re_your_api_key  # Optional, untuk email reminders
+```
+
+#### GitHub Actions Secrets
+
+Jika menggunakan GitHub Actions untuk cron jobs, tambahkan secrets di repo:
+
+1. `APP_URL` - URL aplikasi yang di-deploy (e.g., `https://orbit.vercel.app`)
+2. `CRON_SECRET` - Sama dengan value di environment variables
+
+#### Cron Jobs Setup
+
+File workflow sudah dibuat di `.github/workflows/cron-jobs.yml`:
+
+| Job        | Schedule           | Endpoint                       |
+| ---------- | ------------------ | ------------------------------ |
+| End of Day | 11:59 PM UTC daily | `/api/v1/system/end-of-day`    |
+| Reminders  | Every 15 minutes   | `/api/v1/system/reminders/run` |
+
+**Untuk Vercel:** Tambahkan `vercel.json` dengan konfigurasi crons.
+
+**Testing manual:**
+
+```bash
+curl -X POST https://your-app.vercel.app/api/v1/system/end-of-day \
+  -H "Authorization: Bearer YOUR_CRON_SECRET"
+```
+
+---

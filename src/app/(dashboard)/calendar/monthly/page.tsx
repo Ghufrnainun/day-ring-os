@@ -1,89 +1,98 @@
-'use client';
-
-import * as React from 'react';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import { getMonthlyData, getMonthNavigation } from '@/actions/calendar';
 import {
   format,
-  addMonths,
-  subMonths,
+  parseISO,
   startOfMonth,
   endOfMonth,
   eachDayOfInterval,
   isSameMonth,
-  isSameDay,
   isToday,
+  isSameDay,
+  getDay,
 } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { useQuery } from '@tanstack/react-query';
-import { createClient } from '@/lib/supabase/client';
-import { useUser } from '@/hooks/use-user';
+import { Button } from '@/components/ui/button';
+import { DensityDots } from '@/components/ui/density-indicator';
 
-export default function MonthlyPage() {
-  const router = useRouter();
-  const { data: user } = useUser();
-  const supabase = createClient();
+interface MonthlyPageProps {
+  searchParams: Promise<{
+    date?: string; // YYYY-MM
+  }>;
+}
 
-  const [currentMonth, setCurrentMonth] = React.useState(new Date());
+export default async function MonthlyPage(props: MonthlyPageProps) {
+  const searchParams = await props.searchParams;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect('/login');
 
-  const monthStart = startOfMonth(currentMonth);
-  const monthEnd = endOfMonth(currentMonth);
+  // Parse Date
+  const now = new Date();
+  const dateParam = searchParams?.date;
+  let currentMonthDate = now;
+
+  if (dateParam) {
+    // Basic validation/parsing
+    try {
+      currentMonthDate = parseISO(`${dateParam}-01`);
+      if (isNaN(currentMonthDate.getTime())) throw new Error();
+    } catch {
+      currentMonthDate = now;
+    }
+  }
+
+  // Fetch Profile for Timezone
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('timezone')
+    .eq('user_id', user.id)
+    .single();
+  const timezone = profile?.timezone || 'UTC';
+
+  // Fetch Data
+  const year = currentMonthDate.getFullYear();
+  const month = currentMonthDate.getMonth();
+
+  const { stats } = await getMonthlyData(year, month, timezone);
+  const nav = await getMonthNavigation(year, month);
+
+  // Grid Prep
+  const monthStart = startOfMonth(currentMonthDate);
+  const monthEnd = endOfMonth(currentMonthDate);
   const days = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
-  // Fetch task counts for the month
-  const { data: taskCounts } = useQuery({
-    queryKey: ['month-tasks', format(currentMonth, 'yyyy-MM')],
-    enabled: !!user,
-    queryFn: async () => {
-      if (!user) return {};
-      // This is a bit complex in Supabase without a specific view,
-      // but we can fetch all instances for the month range.
-      // Optimization: create a view `monthly_task_counts` later?
-      // For now, raw fetch instances.
+  const prevLink = `/calendar/monthly?date=${nav.prev.year}-${String(
+    nav.prev.month + 1
+  ).padStart(2, '0')}`;
+  const nextLink = `/calendar/monthly?date=${nav.next.year}-${String(
+    nav.next.month + 1
+  ).padStart(2, '0')}`;
 
-      const { data, error } = await supabase
-        .from('task_instances')
-        .select('logical_day, status')
-        .eq('user_id', user.id)
-        .gte('logical_day', format(monthStart, 'yyyy-MM-dd'))
-        .lte('logical_day', format(monthEnd, 'yyyy-MM-dd'));
-
-      if (error) throw error;
-
-      // Aggregate
-      const counts: Record<string, { total: number; done: number }> = {};
-      data.forEach((item) => {
-        const day = item.logical_day;
-        if (!counts[day]) counts[day] = { total: 0, done: 0 };
-        counts[day].total++;
-        if (item.status === 'done') counts[day].done++;
-      });
-
-      return counts;
-    },
-  });
-
-  const goToDaily = (date: Date) => {
-    router.push(`/calendar/daily?date=${format(date, 'yyyy-MM-dd')}`);
-  };
-
-  const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
-  const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
+  const monthLabel = format(currentMonthDate, 'MMMM yyyy');
 
   return (
-    <div className="flex flex-col space-y-6 animate-fade-in pb-20">
+    <div className="flex flex-col space-y-6 animate-fade-in pb-20 max-w-2xl mx-auto w-full">
       <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold font-display tracking-tight">
-          {format(currentMonth, 'MMMM yyyy')}
+        <h1 className="text-2xl font-bold font-display tracking-tight text-foreground">
+          {monthLabel}
         </h1>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" onClick={prevMonth}>
-            <ChevronLeft size={20} />
-          </Button>
-          <Button variant="ghost" size="icon" onClick={nextMonth}>
-            <ChevronRight size={20} />
-          </Button>
+          <Link href={prevLink}>
+            <Button variant="ghost" size="icon">
+              <ChevronLeft size={20} />
+            </Button>
+          </Link>
+          <Link href={nextLink}>
+            <Button variant="ghost" size="icon">
+              <ChevronRight size={20} />
+            </Button>
+          </Link>
         </div>
       </header>
 
@@ -99,61 +108,62 @@ export default function MonthlyPage() {
       </div>
 
       <div className="grid grid-cols-7 gap-2">
-        {/* Placeholder for empty days start of month */}
-        {Array.from({ length: monthStart.getDay() }).map((_, i) => (
+        {/* Empty cells for start of month offset */}
+        {Array.from({ length: getDay(monthStart) }).map((_, i) => (
           <div key={`empty-${i}`} />
         ))}
 
         {days.map((day) => {
           const dateKey = format(day, 'yyyy-MM-dd');
-          const stats = taskCounts?.[dateKey];
-          const hasTasks = stats && stats.total > 0;
-          const isComplete = hasTasks && stats.done === stats.total;
+          const dayStats = stats[dateKey];
+          const hasTasks = dayStats && dayStats.total > 0;
+          const isComplete = hasTasks && dayStats.done === dayStats.total;
+          const isCurrentDay = isSameDay(day, now);
 
           return (
-            <button
-              key={day.toISOString()}
-              onClick={() => goToDaily(day)}
+            <Link
+              key={dateKey}
+              href={`/calendar/daily?date=${dateKey}`}
               className={cn(
-                'aspect-square rounded-xl flex flex-col items-center justify-center relative transition-all border border-transparent',
-                isToday(day)
-                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20'
-                  : 'bg-card/40 hover:bg-card/80 hover:scale-105 border-white/5',
-                isSameDay(day, new Date()) &&
-                  !isToday(day) &&
-                  'border-primary/50' // Should handle selection later if needed
+                'aspect-square rounded-xl flex flex-col items-center justify-center relative transition-all border outline-none focus-visible:ring-2 ring-primary/50',
+                isCurrentDay
+                  ? 'bg-primary text-primary-foreground shadow-lg shadow-primary/20 border-transparent'
+                  : 'bg-card/40 hover:bg-card/80 border-white/5 hover:scale-105 hover:border-white/10'
               )}
             >
               <span
                 className={cn(
                   'text-sm font-medium',
-                  isToday(day) ? 'font-bold' : ''
+                  isCurrentDay ? 'font-bold' : ''
                 )}
               >
                 {format(day, 'd')}
               </span>
 
-              {/* Dots for tasks */}
+              {/* Density dots for tasks */}
               {hasTasks && (
-                <div className="flex gap-0.5 mt-1">
-                  {/* Just one dot if some exist, green if all done */}
-                  <div
-                    className={cn(
-                      'w-1 h-1 rounded-full',
+                <div className="mt-1">
+                  <DensityDots
+                    count={dayStats.total}
+                    color={
                       isComplete
-                        ? isToday(day)
-                          ? 'bg-white'
-                          : 'bg-green-500'
-                        : isToday(day)
-                        ? 'bg-white/70'
-                        : 'bg-muted-foreground'
-                    )}
+                        ? 'success'
+                        : isCurrentDay
+                        ? 'default'
+                        : 'muted'
+                    }
                   />
                 </div>
               )}
-            </button>
+            </Link>
           );
         })}
+      </div>
+
+      <div className="text-center mt-8">
+        <p className="text-sm text-muted-foreground">
+          Click a day to view its plan.
+        </p>
       </div>
     </div>
   );

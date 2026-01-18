@@ -1,0 +1,28 @@
+name: Scheduled Jobs
+
+on:
+  schedule:
+    # End of day - 11:59 PM UTC
+    - cron: '59 23 * * *'
+    # Reminders - every 15 minutes
+    - cron: '*/15 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  end-of-day:
+    if: github.event.schedule == '59 23 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger End of Day
+        run: |
+          curl -X POST "${{ secrets.APP_URL }}/api/v1/system/end-of-day" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"
+
+  reminders:
+    if: github.event.schedule == '*/15 * * * *'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Reminders
+        run: |
+          curl -X POST "${{ secrets.APP_URL }}/api/v1/system/reminders/run" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"

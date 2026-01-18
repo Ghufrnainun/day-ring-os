@@ -2,91 +2,169 @@
 
 import * as React from 'react';
 import { Maximize2, MoreHorizontal } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
+  DialogTitle,
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createClient } from '@/lib/supabase/client';
-import { useUser } from '@/hooks/use-user';
 import { toast } from 'sonner';
+import {
+  saveNote,
+  deleteNote,
+  convertChecklistItemToTask,
+} from '@/actions/notes';
+
+type TemplateType = 'blank' | 'meeting' | 'weekly' | 'billing' | 'project';
+
+const NOTE_TEMPLATES: Array<{
+  type: TemplateType;
+  label: string;
+  helper: string;
+  defaultTitle: string;
+  defaultBody: string;
+}> = [
+  {
+    type: 'blank',
+    label: 'Blank Note',
+    helper: 'Free-form space for anything on your mind.',
+    defaultTitle: 'Untitled Note',
+    defaultBody: '',
+  },
+  {
+    type: 'meeting',
+    label: 'Meeting Notes',
+    helper: 'Capture agenda, decisions, and next steps.',
+    defaultTitle: 'Meeting Notes',
+    defaultBody: 'Agenda\n- \n\nNotes\n- \n\nNext steps\n- ',
+  },
+  {
+    type: 'weekly',
+    label: 'Weekly Planning',
+    helper: 'Plan priorities and energy for the week.',
+    defaultTitle: 'Weekly Plan',
+    defaultBody:
+      'Focus this week\n- \n\nMust-do items\n- \n\nSupportive reminders\n- ',
+  },
+  {
+    type: 'billing',
+    label: 'Bills & Payments',
+    helper: 'Track what needs to be paid and when.',
+    defaultTitle: 'Bills & Payments',
+    defaultBody: 'Bills to pay\n- \n\nDue dates\n- \n\nNotes\n- ',
+  },
+  {
+    type: 'project',
+    label: 'Project Notes',
+    helper: 'Keep tasks, ideas, and references together.',
+    defaultTitle: 'Project Notes',
+    defaultBody:
+      'Goals\n- \n\nOpen questions\n- \n\nTasks to convert later\n- ',
+  },
+];
 
 interface NoteEditorDialogProps {
   children?: React.ReactNode;
-  note?: { id: string; title: string; content?: any; color?: string };
+  note?: {
+    id: string;
+    title: string;
+    content?: any;
+    template_type?: TemplateType;
+    color?: string;
+  };
+  templateType?: TemplateType;
 }
 
-export function NoteEditorDialog({ children, note }: NoteEditorDialogProps) {
+export function NoteEditorDialog({
+  children,
+  note,
+  templateType,
+}: NoteEditorDialogProps) {
+  // Internal state for the dialog
   const [open, setOpen] = React.useState(false);
+
   const [title, setTitle] = React.useState(note?.title || '');
   const [content, setContent] = React.useState(note?.content?.body || '');
+  const [selectedTemplate, setSelectedTemplate] = React.useState<TemplateType>(
+    note?.template_type ?? templateType ?? 'blank',
+  );
 
-  const { data: user } = useUser();
-  const supabase = createClient();
-  const queryClient = useQueryClient();
+  const [hasEdited, setHasEdited] = React.useState(false);
 
-  // Reset state when note prop changes or dialog opens
+  const [isPending, startTransition] = React.useTransition();
+
+  // Sync when dialog opens
   React.useEffect(() => {
     if (open) {
       setTitle(note?.title || '');
       setContent(note?.content?.body || '');
+      setSelectedTemplate(note?.template_type ?? templateType ?? 'blank');
+      setHasEdited(false);
     }
-  }, [open, note]);
+  }, [open, note, templateType]);
 
-  const { mutate: saveNote, isPending } = useMutation({
-    mutationFn: async () => {
-      if (!user) throw new Error('User auth missing');
-      if (!title.trim() && !content.trim()) return; // Don't save empty
+  React.useEffect(() => {
+    if (!open || note?.id || hasEdited) return;
+    const template = NOTE_TEMPLATES.find(
+      (item) => item.type === selectedTemplate,
+    );
+    if (!template) return;
+    setTitle(template.defaultTitle);
+    setContent(template.defaultBody);
+  }, [open, note?.id, hasEdited, selectedTemplate]);
 
-      const payload: any = {
-        user_id: user.id,
-        title: title || 'Untitled Note',
-        content: { body: content },
-        updated_at: new Date().toISOString(),
-      };
+  const handleSave = () => {
+    if (!title.trim() && !content.trim()) return;
 
-      if (note?.id) {
-        payload.id = note.id;
+    startTransition(async () => {
+      try {
+        await saveNote({
+          id: note?.id,
+          title,
+          content: { body: content },
+          template_type: selectedTemplate,
+        });
+        toast.success('Note saved');
+        if (!note?.id) setOpen(false); // Close on create, keep open on edit? behavior check
+      } catch (e) {
+        toast.error('Failed to save note');
       }
+    });
+  };
 
-      const { error } = await supabase.from('notes').upsert(payload);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast.success('Note saved');
-      queryClient.invalidateQueries({ queryKey: ['notes'] });
-      setOpen(false);
-    },
-    onError: (err) => {
-      console.error(err);
-      toast.error('Failed to save note');
-    },
-  });
-
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!note?.id) return;
-    const { error } = await supabase.from('notes').delete().eq('id', note.id);
-    if (!error) {
-      toast.success('Note deleted');
-      queryClient.invalidateQueries({ queryKey: ['notes'] });
-      setOpen(false);
-    }
+    startTransition(async () => {
+      try {
+        await deleteNote(note.id);
+        toast.success('Note deleted');
+        setOpen(false);
+      } catch (e) {
+        toast.error('Failed to delete note');
+      }
+    });
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-3xl h-[80vh] flex flex-col p-0 gap-0 bg-background/95 backdrop-blur-xl border-white/20 bg-grain sm:rounded-2xl overflow-hidden shadow-2xl">
+        <VisuallyHidden>
+          <DialogTitle>{note ? 'Edit Note' : 'Create New Note'}</DialogTitle>
+        </VisuallyHidden>
         {/* Toolbar */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
           <span className="text-xs font-mono text-muted-foreground">
@@ -117,7 +195,7 @@ export function NoteEditorDialog({ children, note }: NoteEditorDialogProps) {
               variant="ghost"
               size="sm"
               className="h-8 rounded-full bg-white/5 hover:bg-white/10 hover:text-primary transition-colors"
-              onClick={() => saveNote()}
+              onClick={handleSave}
               disabled={isPending}
             >
               {isPending ? 'Saving...' : 'Done'}
@@ -126,21 +204,73 @@ export function NoteEditorDialog({ children, note }: NoteEditorDialogProps) {
         </div>
 
         {/* Editor Area */}
-        <div className="flex-1 overflow-y-auto px-8 py-8 space-y-4">
-          {/* Title */}
-          <input
-            className="w-full text-4xl font-display font-bold bg-transparent border-none focus:outline-none placeholder:text-muted-foreground/30 text-foreground"
-            placeholder="Untitled Note"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          {/* Body */}
-          <textarea
-            className="w-full h-full min-h-[400px] resize-none text-lg leading-relaxed bg-transparent border-none focus:outline-none text-muted-foreground/90 placeholder:text-muted-foreground/30 font-serif"
-            placeholder="Start typing..."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+        <div className="flex-1 overflow-visible px-0 pb-0 flex flex-col">
+          {!note?.id && (
+            <div className="px-8 pt-6 pb-2 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Templates
+                </span>
+                <span className="text-xs text-muted-foreground/70">
+                  Optional, change anytime
+                </span>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {NOTE_TEMPLATES.map((template) => (
+                  <button
+                    key={template.type}
+                    type="button"
+                    onClick={() => {
+                      setHasEdited(false);
+                      setSelectedTemplate(template.type);
+                    }}
+                    className={cn(
+                      'p-3 rounded-xl border text-left transition-colors',
+                      selectedTemplate === template.type
+                        ? 'border-primary/40 bg-primary/5'
+                        : 'border-border/60 bg-white/30 hover:bg-white/50',
+                    )}
+                  >
+                    <div className="text-sm font-medium text-foreground">
+                      {template.label}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {template.helper}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div className="flex-1 flex flex-col min-h-0">
+            {/* Title */}
+            <div className="px-8 pt-4">
+              <input
+                className="w-full text-4xl font-display font-bold bg-transparent border-none focus:outline-none placeholder:text-muted-foreground/30 text-foreground"
+                placeholder="Untitled Note"
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                  setHasEdited(true);
+                }}
+              />
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto px-8 py-4">
+              <RichTextEditor
+                content={content}
+                onChange={(newContent) => {
+                  setContent(newContent);
+                  setHasEdited(true);
+                }}
+                className="min-h-full"
+                editorClassName="min-h-[300px]"
+                placeholder="Start writing..."
+              />
+            </div>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

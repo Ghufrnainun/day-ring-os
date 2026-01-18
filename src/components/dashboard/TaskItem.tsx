@@ -22,7 +22,7 @@ export function TaskItem({
       className={cn(
         'flex items-center p-3 rounded-xl border transition-all duration-200 group cursor-pointer',
         completed
-          ? 'bg-muted/5 border-transparent opacity-60'
+          ? 'bg-muted/20 border-transparent opacity-75'
           : 'bg-card border-border/50 hover:border-primary/30 hover:shadow-sm'
       )}
     >

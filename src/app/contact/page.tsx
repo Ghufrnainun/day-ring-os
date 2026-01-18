@@ -13,7 +13,7 @@ export default function ContactPage() {
           </h1>
           <div className="prose prose-lg dark:prose-invert">
             <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-              have questions or feedback? We'd love to hear from you.
+              have questions or feedback? We&apos;d love to hear from you.
             </p>
 
             <div className="bg-surface/50 border border-border rounded-lg p-8 backdrop-blur-sm">

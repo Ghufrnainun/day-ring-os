@@ -37,7 +37,7 @@ export default function RegisterPage() {
             full_name: fullName,
             // Simple avatar placeholder using UI Avatars
             avatar_url: `https://ui-avatars.com/api/?name=${encodeURIComponent(
-              fullName
+              fullName,
             )}&background=random`,
           },
         },
@@ -63,7 +63,7 @@ export default function RegisterPage() {
       } else {
         // Assume email verification is required
         setError(
-          'Account created! Please check your email to confirm your registration.'
+          'Account created! Please check your email to confirm your registration.',
         );
         // Optional: Redirect to a verification pending page
       }
@@ -137,7 +137,7 @@ export default function RegisterPage() {
             <span className="w-full border-t border-border" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-surface px-2 text-muted-foreground">
+            <span className="bg-background px-2 text-foreground/60 font-medium">
               Or continue with email
             </span>
           </div>

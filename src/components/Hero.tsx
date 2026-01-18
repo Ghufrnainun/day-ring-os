@@ -38,8 +38,9 @@ const Hero: React.FC = () => {
                 href="/register"
                 className="h-11 px-8 rounded-full bg-[#2F4F4F] text-white font-medium hover:bg-[#2F4F4F]/90 transition-all shadow-glow flex items-center justify-center min-w-[140px]"
               >
-                Start Free
+                Create your first day
               </Link>
+
             </div>
             <p className="mt-4 text-xs font-medium text-muted-foreground/80 flex items-center gap-6">
               <span className="flex items-center gap-1.5">
