@@ -252,6 +252,7 @@ async function createTransaction(data: TransactionInput) {
 1. **Clone the repository**
 
 ```bash
+# Note: Repository name is 'day-ring-os', product name is 'Orbit'
 git clone https://github.com/Ghufrnainun/day-ring-os.git
 cd day-ring-os
 ```
