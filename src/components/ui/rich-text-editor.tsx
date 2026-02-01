@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react';
+import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import Underline from '@tiptap/extension-underline';
@@ -221,7 +221,8 @@ export function RichTextEditor({
         </ToolbarButton>
       </div>
 
-      {/* Bubble Menu (appears on text selection) */}
+      {/* Bubble Menu (disabled due to import error) */}
+      {/* 
       <BubbleMenu
         editor={editor}
         tippyOptions={{ duration: 100 }}
@@ -248,7 +249,8 @@ export function RichTextEditor({
         >
           <UnderlineIcon size={14} />
         </ToolbarButton>
-      </BubbleMenu>
+      </BubbleMenu> 
+      */}
 
       {/* Editor Content */}
       <EditorContent editor={editor} className="px-1" />

@@ -43,9 +43,9 @@ const Navbar: React.FC = () => {
     >
       <nav
         className={cn(
-          'flex items-center justify-between gap-6 px-4 sm:px-6 py-3 rounded-full transition-all duration-300',
+          'flex items-center justify-between gap-6 px-4 sm:px-6 py-3 rounded-full transition-colors duration-300',
           'bg-background/70 backdrop-blur-xl border border-border/50 shadow-lg',
-          isScrolled && 'bg-background/85 shadow-xl'
+          isScrolled && 'bg-background/85 shadow-xl',
         )}
         style={{
           maxWidth: '800px',

@@ -31,15 +31,16 @@ You are a **senior full-stack engineer** working autonomously on Orbit.
 
 At the start of every run, identify the active role(s) for the task and load the matching skills. Read only the relevant `SKILL.md` or workflow doc before planning.
 
-| Role             | Skills to check (when relevant)                                      |
-| ---------------- | -------------------------------------------------------------------- |
-| Product Engineer | `vercel-react-best-practices`                                        |
-| QA Engineer      | `web-design-guidelines`                                              |
-| UX Guardian      | `ui-ux-pro-max` workflow + `web-design-guidelines` for review        |
-| Backend Engineer | None by default; check for backend skills in `.agent/skills/`        |
-| DevOps Mindset   | None by default; check for infra skills in `.agent/skills/`          |
+| Role             | Skills to check (when relevant)                               |
+| ---------------- | ------------------------------------------------------------- |
+| Product Engineer | `vercel-react-best-practices`                                 |
+| QA Engineer      | `web-design-guidelines`                                       |
+| UX Guardian      | `ui-ux-pro-max` workflow + `web-design-guidelines` for review |
+| Backend Engineer | None by default; check for backend skills in `.agent/skills/` |
+| DevOps Mindset   | None by default; check for infra skills in `.agent/skills/`   |
 
 Notes:
+
 - Skill docs live in `.codex/skills/<skill>/SKILL.md` and `.agent/skills/<skill>/SKILL.md`.
 - Workflows live in `.agent/workflows/*.md`.
 - If multiple roles apply, load the union of their skills.
@@ -484,12 +485,12 @@ A feature is **done** when:
 | **Shadows**         | Soft elevation, never heavy drop shadows                        |
 | **Motion**          | Minimal, purposeful, short duration                             |
 
-| NEVER               | ALWAYS                             |
-| ------------------- | ---------------------------------- |
-| Neon gradients      | Muted, earthy accents              |
-| Blue as brand       | Green/olive/terracotta as accents  |
-| Shame-based copy    | Supportive, neutral messaging      |
-| Habit game visuals  | Subtle execution feedback          |
+| NEVER               | ALWAYS                               |
+| ------------------- | ------------------------------------ |
+| Neon gradients      | Muted, earthy accents                |
+| Blue as brand       | Green/olive/terracotta as accents    |
+| Shame-based copy    | Supportive, neutral messaging        |
+| Habit game visuals  | Subtle execution feedback            |
 | Forced daily inputs | Optional, user-controlled engagement |
 
 ---
@@ -503,7 +504,7 @@ import { formatInTimeZone } from 'date-fns-tz';
 
 export function getLogicalDay(
   timezone: string,
-  date: Date = new Date()
+  date: Date = new Date(),
 ): string {
   return formatInTimeZone(date, timezone, 'yyyy-MM-dd');
 }

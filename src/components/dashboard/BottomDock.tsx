@@ -58,7 +58,7 @@ export function BottomDock() {
         {/* Decorative glow behind */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-amber-300/20 to-primary/20 rounded-full blur-xl -z-10" />
 
-        <div className="relative flex h-[72px] items-center justify-around rounded-[28px] border border-white/40 bg-white/70 backdrop-blur-2xl shadow-2xl shadow-stone-400/20 px-6 overflow-hidden">
+        <div className="relative flex h-[72px] items-center justify-around rounded-[28px] border border-border/40 bg-background/80 backdrop-blur-2xl shadow-2xl shadow-stone-400/20 px-6 overflow-hidden">
           {/* Shimmer effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-shimmer" />
 
@@ -75,7 +75,7 @@ export function BottomDock() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'relative flex flex-col items-center justify-center p-2.5 rounded-2xl transition-all duration-300',
+                  'relative flex flex-col items-center justify-center p-2.5 rounded-2xl transition-colors duration-300',
                   isActive
                     ? 'text-primary scale-110'
                     : 'text-muted-foreground hover:text-foreground hover:scale-105 active:scale-95',
@@ -115,7 +115,7 @@ export function BottomDock() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'relative flex flex-col items-center justify-center p-2.5 rounded-2xl transition-all duration-300',
+                  'relative flex flex-col items-center justify-center p-2.5 rounded-2xl transition-colors duration-300',
                   isActive
                     ? 'text-primary scale-110'
                     : 'text-muted-foreground hover:text-foreground hover:scale-105 active:scale-95',

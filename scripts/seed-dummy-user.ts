@@ -47,7 +47,7 @@ async function seedDummyUser() {
     if (authError.message.includes('already exists')) {
       console.log('✅ User already exists, getting user ID...');
       const { data: existingUser } = await supabase.auth.admin.listUsers();
-      const user = existingUser?.users.find((u) => u.email === email);
+      const user = existingUser?.users.find((u: any) => u.email === email);
       if (!user) {
         console.error('❌ Could not find existing user');
         return;

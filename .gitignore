@@ -32,3 +32,6 @@ dist-ssr
 .*shared
 .next
 .env
+.agents
+.gemini
+.trae

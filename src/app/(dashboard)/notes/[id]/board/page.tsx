@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { getBoardData, initializeBoard } from '@/actions/board';
-import { BoardView } from '@/components/dashboard/notes/board/BoardView';
+import { BoardView } from '@/components/dashboard/boards/BoardView';
 import Link from 'next/link';
 import { ChevronLeft, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -79,7 +79,7 @@ export default async function BoardPage({ params }: BoardPageProps) {
       </div>
 
       {/* Board */}
-      <BoardView noteId={id} initialData={boardData} />
+      <BoardView board={boardData} />
     </div>
   );
 }
