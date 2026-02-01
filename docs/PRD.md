@@ -917,7 +917,7 @@ User trust is foundational.
 
 Privacy rules:
 
-- Public profile shows **execution heatmap only**
+- Public profile shows: display name, username, execution stats (current streak, total tasks/habits completed), and activity heatmap
 - No financial data is ever public
 - No habit/task details are public by default
 
