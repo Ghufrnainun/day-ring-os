@@ -99,11 +99,14 @@ User can:
 2. Quick add:
    - Task
    - Habit
-3. Update task status:
+3. Quick filters:
+   - All / Pending / Done / Skipped
+   - Habits only toggle
+4. Update task status:
    - Done
    - Skipped
    - Delayed (auto-move to next day)
-4. See lightweight summary:
+5. See lightweight summary:
    - Tasks completed today
    - Habit streak status
    - Money moved today
@@ -213,6 +216,9 @@ Habit features:
 - Reminder required by default
 - Confirmation required (manual)
 - Auto-expire to _not completed today_ (UI copy)
+- Repeat rule helpers (Phase 2+):
+  - Weekday-only / weekend-only presets
+  - Exclude specific days (e.g., Fri)
 
 System mapping:
 
@@ -265,6 +271,14 @@ Levels & achievements are derived from long-term habit consistency.
   - Transfer/Investment: choose from + to accounts, balances update
 - Phase 1 supports income and expense only; transfer and investment are Phase 2
 - Phase 2 adds recurring transactions with flexible schedules (custom intervals), reminders/drafts, and optional end date or occurrence limit
+- **Subscription Tracker (Phase 2+)**:
+  - Track subscriptions with provider, amount, cadence, next charge date, and status (active/paused/cancelled)
+  - Generate upcoming charges as **draft transactions** (user-confirmed) to avoid accidental posting
+  - Gentle renewal reminders (no pressure language), with optional "cancelled" mark
+  - Supports free trials and variable billing dates
+- **Budget caps (Phase 2+)**:
+  - Optional soft caps per category (warning only, no blocking)
+  - Calm copy for over-cap events
 - Optional receipt attachment on transactions (upload only; OCR deferred to P3+)
 - Negative balances are allowed with a soft warning (no hard block)
 
@@ -305,6 +319,9 @@ Notes may span **multiple days** and are **not bound to a single logical day**.
   - Rich text content
   - Checklists
   - Embedded references (dates, tasks, money)
+- Optional attachments (Phase 2+):
+  - Images / files linked to notes
+  - No document-workspace behavior (keep notes lightweight)
 - Convert checklist items into **Tasks**
 - Link notes to:
   - Tasks (e.g. meeting action items)
@@ -515,6 +532,7 @@ Rationale:
 
 - Today uses **simple list rows** for speed
 - Task detail screens can use **cards per item** (similar to Notes)
+- Quick filters live above the list and remain one-tap reachable
 
 **Accent usage (subtle):**
 
@@ -574,6 +592,7 @@ Rules:
   - Allowed from Today Screen
   - Allowed for past days
 - Add Transaction supports optional linking to Task and/or Note; Quick Finance stays minimal (no linking)
+- Subscription tracker lives inside Finance (not Today), with upcoming charges list and gentle reminders
 
 Rationale:
 
@@ -2214,6 +2233,7 @@ CREATE TABLE reminder_deliveries (
 - Finance improvements:
   - Recurring transactions (flexible schedules, reminder-first)
   - Smart defaults (last used account/category)
+  - Subscription tracker (renewal dates, trial tracking, gentle reminders)
 
 **What to Explicitly Avoid:**
 
@@ -2590,6 +2610,28 @@ Create transaction category.
   "idempotency_key": "uuid"
 }
 ```
+
+#### POST /api/v1/subscriptions (Phase 2+)
+
+Create a subscription tracker item.
+
+```json
+{
+  "provider": "Spotify",
+  "amount": 65000,
+  "currency_code": "IDR",
+  "cadence": "monthly",
+  "next_charge_at": "2026-02-01T09:00:00+07:00",
+  "status": "active",
+  "trial_end_at": null,
+  "idempotency_key": "uuid"
+}
+```
+
+Behavior:
+
+- Generates a **draft transaction** when due (user confirms)
+- If status is `paused` or `cancelled`, no drafts are generated
 
 #### POST /api/v1/transactions
 

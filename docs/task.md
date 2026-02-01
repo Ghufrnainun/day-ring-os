@@ -106,6 +106,7 @@
 - [x] **Optimistic updates with calm error fallback** ✅ NEW
 - [x] **Quick log finance from Today** ✅ NEW
 - [x] **Allow past-day quick logging for finance** ✅ NEW
+- [ ] Quick filters (All / Pending / Done / Skipped, Habits only) (P2+)
 
 ## 7. Tasks & Habits Engine (PRD 5.1, 5.2, 6.6)
 
@@ -116,6 +117,7 @@
 - [x] **Delayed tasks move to next logical day** ✅ NEW
 - [x] Task vs Habit visual distinction (gentle, non-pressure)
 - [x] **Habit confirmation required (manual) for points** ✅ (Points only awarded on Done click)
+- [ ] Repeat rule helpers (weekday/weekend presets, exclude days) (P2+)
 
 ## 8. Reminders (PRD 5.2, 10.7)
 
@@ -139,6 +141,7 @@
 - [x] **Notes Editor**
   - [x] Rich Text / Markdown support
   - [x] Checklist support
+  - [ ] Note attachments (images/files, lightweight) (P2+)
   - [x] **Convert checklist item -> Task** ✅ NEW
 - [x] Templates: blank, meeting, weekly, billing, project
 - [x] **Link Notes ↔ Tasks ↔ Transactions** ✅ NEW
@@ -161,6 +164,8 @@
 - [x] **Link transaction → task / note (P2)** ✅ NEW
 - [x] **Negative balance handling (configurable strict vs soft)** ✅ NEW
 - [x] **Recurring transactions + smart defaults (P2)** ✅ NEW
+- [ ] Subscription tracker (renewal dates, trials, draft charges) (P2+)
+- [ ] Budget caps (soft warnings per category) (P2+)
 - [ ] Reconciliation endpoint + audit (P3+)
 - [ ] Adjustments for edits, never hard delete (P3+)
 
