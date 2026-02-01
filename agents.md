@@ -72,7 +72,7 @@ These are **absolute constraints** - violation is considered a critical bug.
 
 - Financial data is **NEVER** public
 - Habit/task details are **NOT** public by default
-- Public profile shows execution heatmap only
+- Public profile shows: display name, username, execution stats (current streak, total tasks/habits completed), and activity heatmap
 - Public profile is **default ON** but can be disabled instantly
 
 ### UX Quality Rules
