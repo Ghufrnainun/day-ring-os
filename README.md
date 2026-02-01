@@ -210,7 +210,7 @@ async function createTransaction(data: TransactionInput) {
 - `transactions` table is the source of truth
 - `money_accounts.current_balance` is a denormalized cache
 - Balances update atomically within same transaction
-- `idempotency_keys` table is server-only (no client policies)
+- `idempotency_keys` table: server-only writes; clients can read their own keys via RLS SELECT policy
 
 ### Database Schema
 
@@ -235,7 +235,7 @@ async function createTransaction(data: TransactionInput) {
 
 - `idx_task_instances_logical_day`: Fast day-based queries
 - `idx_task_instances_user_logical_day`: User-scoped day queries
-- `idx_transactions_logical_day`: Financial day queries
+- `idx_transactions_user_logical_day`: Financial day queries
 
 ---
 
@@ -295,7 +295,7 @@ npx supabase start
 # Reset database and apply migrations
 npx supabase db reset
 
-# Generate TypeScript types
+# Generate TypeScript types (optional - types are gitignored)
 npx supabase gen types typescript --local > src/types/supabase.ts
 ```
 
@@ -319,8 +319,8 @@ npx supabase gen types typescript --local > src/types/supabase.ts
 ```
 src/
 ├── app/                # Next.js App Router pages & layouts
-│   ├── (auth)/         # Auth-protected route group
-│   ├── (dashboard)/    # Dashboard route group
+│   ├── (auth)/         # Authentication (public) route group
+│   ├── (dashboard)/    # Protected dashboard (signed-in app) route group
 │   ├── api/            # API route handlers
 │   └── ...
 ├── components/         # React components
@@ -419,7 +419,7 @@ interface ApiError {
 
 ### Code Quality
 
-- **TypeScript**: Strict mode enabled
+- **TypeScript**: Configured with shared `tsconfig` (strict mode currently disabled)
 - **ESLint**: Configured with Next.js and React rules
 - **Testing**: Vitest for unit tests
 - **Accessibility**: WCAG AA compliance target
@@ -477,9 +477,10 @@ Applied to: `tasks`, `notes`, `money_accounts`, and especially `transactions`
 | Route | Purpose |
 |-------|---------|
 | `/` | Landing page / Today Screen (authenticated) |
-| `/auth/*` | Authentication flows (sign in, sign up) |
+| `/(auth)/login` | Sign in page |
+| `/(auth)/register` | Sign up page |
+| `/auth/*` | Authentication callbacks and sign-out flows |
 | `/onboarding` | Initial setup and module selection |
-| `/(dashboard)/*` | Main application screens |
 | `/(dashboard)/today` | Today Screen (primary entry) |
 | `/(dashboard)/tasks` | Task management |
 | `/(dashboard)/habits` | Habit management |
